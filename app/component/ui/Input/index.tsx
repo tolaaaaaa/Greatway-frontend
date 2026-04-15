@@ -180,6 +180,7 @@ export default function DynamicInput({
         aria-label={name}
         placeholder={placeholder}
         disabled={disabled}
+        rows={6}
         defaultValue={normalizedValue}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={() => setIsFocused(true)}

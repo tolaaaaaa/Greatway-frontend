@@ -8,6 +8,7 @@ import { useState, useRef } from "react";
 import PropertyTabs from "./propertyTab";
 import { Bed, Bath, Car, Dock } from "lucide-react";
 import PropertyCard, { PropertyFeature } from "../../_component/productCard";
+import Link from "next/link";
 
 type TabOption = "listed" | "unlisted" | "sold";
 const ITEMS_PER_PAGE = 6;
@@ -52,9 +53,11 @@ export default function Properties() {
 
       <div className="flex justify-between items-center gap-4">
         <PropertyTabs onChange={handleTabChange} />
+        <Link href="/dashboard/properties/new">
         <Button variant="primary" size="md">
           <Plus size={16} /> Add Property
         </Button>
+        </Link>
       </div>
 
       {/* Property Grid */}

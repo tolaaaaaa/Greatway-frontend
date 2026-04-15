@@ -89,7 +89,7 @@ export default function SideBar({
           <Image
             src="/logo.svg"
             alt="Greatway Properties Ltd"
-            width={221}
+            width={120}
             height={72}
             className="w-auto h-12 lg:h-18"
             priority
