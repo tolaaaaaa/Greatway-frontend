@@ -3,6 +3,7 @@
 import { tag } from "@/tags/property.tag";
 import { Property } from "@/types/property";
 import { ServerApiClient } from "@/utils/api-server";
+import { emptyMetaData } from "@/utils/empty-metadata";
 import { formatError } from "@/utils/formating";
 import {
   CreatePropertyDto,
@@ -34,17 +35,6 @@ type PropertyFilters = {
 
 type GetPropertiesParams = PaginationParams<PropertyFilters>;
 
-const emptyMetaData: Pagination<Property> = {
-  items: [],
-  metadata: {
-    total: 0,
-    page: 1,
-    limit: 10,
-    totalPages: 0,
-    hasNextPage: false,
-    hasPreviousPage: false,
-  },
-};
 
 export async function getProperties(
   options: GetPropertiesParams = {},

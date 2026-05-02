@@ -6,11 +6,12 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 export type Props = {
-    url: string
-    alt: string
-}
+  gallery: Gallery;
+  alt: string;
+  handleDelete: (id: string) => void;
+};
 
-export default function GalleryImages({ url, alt }: Props) {
+export default function GalleryImages({ gallery, alt, handleDelete }: Props) {
     const [showPreview, setShowPreview] = useState(false);
 
     const handlePreview = () => {
@@ -25,7 +26,7 @@ export default function GalleryImages({ url, alt }: Props) {
         <>
             <div className="relative group">
                 <Image
-                    src={url}
+                    src={gallery.imageUrl}
                     width={353.67}
                     height={175}
                     alt={alt}
@@ -48,6 +49,7 @@ export default function GalleryImages({ url, alt }: Props) {
                         type="button" 
                         className="w-full text-red-800 border border-red-800" 
                         variant="ghost"
+                        onClick={() => handleDelete(gallery.id)}
                     >
                         Delete
                     </Button>
@@ -75,7 +77,7 @@ export default function GalleryImages({ url, alt }: Props) {
                         {/* Preview Image */}
                         <div className="relative w-full h-full">
                             <Image
-                                src={url}
+                                src={gallery.imageUrl}
                                 alt={alt}
                                 fill
                                 className="rounded-lg object-contain"
