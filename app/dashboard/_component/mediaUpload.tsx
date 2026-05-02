@@ -14,7 +14,7 @@ export type MediaFile = {
 
 type MediaUploadSlotProps = {
   accept: MediaType;
-  value?: MediaFile | string | null; // ← add string
+  value?: MediaFile | string | null;
   onChange: (media: MediaFile | null) => void;
   className?: string;
   label?: string;
@@ -75,68 +75,88 @@ export function MediaUploadSlot({
         className="hidden"
       />
 
-     {displayUrl ? (
-  <>
-    {displayType === "image" ? (
-      <Image
-        src={displayUrl}         // ← was value.url
-        alt="Uploaded media"
-        fill
-        className="object-cover"
-      />
-    ) : (
-      <video
-        src={displayUrl}         // ← was value.url
-        className="absolute inset-0 w-full h-full object-cover"
-        muted
-        playsInline
-      />
-    )}
-    <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-      <Icon className="text-white w-6 h-6" />
-    </div>
-  </>
-) : (
-  <>
-    <Icon className="w-7 h-7 text-muted" strokeWidth={1.5} />
-    <p className="text-xs text-muted">
-      {label !== undefined
-        ? label
-        : accept === "video"
-          ? "Click to add video"
-          : "Click to add picture"}
-    </p>
-  </>
-)}
+      {displayUrl ? (
+        <>
+          {displayType === "image" ? (
+            <Image
+              src={displayUrl}
+              alt="Uploaded media"
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <video
+              src={displayUrl}
+              className="absolute inset-0 w-full h-full object-cover"
+              muted
+              playsInline
+            />
+          )}
+          <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+            <Icon className="text-white w-6 h-6" />
+          </div>
+        </>
+      ) : (
+        <>
+          <Icon className="w-7 h-7 text-muted" strokeWidth={1.5} />
+          <p className="text-xs text-muted">
+            {label !== undefined
+              ? label
+              : accept === "video"
+                ? "Click to add video"
+                : accept === "both"
+                  ? "Click to add image or video"
+                  : "Click to add picture"}
+          </p>
+        </>
+      )}
     </div>
   );
 }
 
 // ─── Image Upload Grid (no video) ─────────────────────────────────────────────
 
-type PropertyImageUploadProps = {
-  onChange?: (files: (MediaFile | string | null)[]) => void;
-  initialImages?: (string | null)[];   // ← add this
+export type ImageFilesChangePayload = {
+  files: (File | null)[];
 };
 
-export function PropertyImageUpload({ onChange, initialImages = [] }: PropertyImageUploadProps) {
-  const [mainImage, setMainImage] = useState<MediaFile | string | null>(initialImages[0] ?? null);
+type PropertyImageUploadProps = {
+  onChange?: (files: (MediaFile | string | null)[]) => void;
+  onFilesChange?: (payload: ImageFilesChangePayload) => void;
+  initialImages?: (string | null)[];
+};
+
+export function PropertyImageUpload({
+  onChange,
+  onFilesChange,
+  initialImages = [],
+}: PropertyImageUploadProps) {
+  const [mainImage, setMainImage] = useState<MediaFile | string | null>(
+    initialImages[0] ?? null,
+  );
   const [sideImages, setSideImages] = useState<(MediaFile | string | null)[]>([
     initialImages[1] ?? null,
     initialImages[2] ?? null,
     initialImages[3] ?? null,
   ]);
 
+  // Keep a parallel array of raw File objects
+  const imageFilesRef = useRef<(File | null)[]>([null, null, null, null]);
+
   const handleMainChange = (media: MediaFile | null) => {
     setMainImage(media);
+    imageFilesRef.current[0] = media?.file ?? null;
     onChange?.([media, ...sideImages]);
+    onFilesChange?.({ files: [...imageFilesRef.current] });
   };
 
   const handleSideChange = (index: number, media: MediaFile | null) => {
     const updated = [...sideImages];
     updated[index] = media;
     setSideImages(updated);
+    imageFilesRef.current[index + 1] = media?.file ?? null;
     onChange?.([mainImage, ...updated]);
+    onFilesChange?.({ files: [...imageFilesRef.current] });
   };
 
   return (
@@ -167,18 +187,29 @@ export function PropertyImageUpload({ onChange, initialImages = [] }: PropertyIm
 
 // ─── Video Upload Section ─────────────────────────────────────────────────────
 
-type PropertyVideoUploadProps = {
-  onChange?: (file: MediaFile | null) => void;
-  initialVideo?: string | null;   // ← add this
+export type VideoFileChangePayload = {
+  file: File | null;
 };
 
+type PropertyVideoUploadProps = {
+  onChange?: (file: MediaFile | null) => void;
+  onFileChange?: (payload: VideoFileChangePayload) => void;
+  initialVideo?: string | null;
+};
 
-export function PropertyVideoUpload({ onChange, initialVideo }: PropertyVideoUploadProps) {
-  const [video, setVideo] = useState<MediaFile | string | null>(initialVideo ?? null);
+export function PropertyVideoUpload({
+  onChange,
+  onFileChange,
+  initialVideo,
+}: PropertyVideoUploadProps) {
+  const [video, setVideo] = useState<MediaFile | string | null>(
+    initialVideo ?? null,
+  );
 
   const handleChange = (media: MediaFile | null) => {
     setVideo(media);
     onChange?.(media);
+    onFileChange?.({ file: media?.file ?? null });
   };
 
   return (
@@ -187,7 +218,7 @@ export function PropertyVideoUpload({ onChange, initialVideo }: PropertyVideoUpl
         accept="video"
         value={video}
         onChange={handleChange}
-        className="h-full w-full"  
+        className="h-full w-full"
         label="Click to add video"
       />
     </div>
@@ -198,14 +229,20 @@ export function PropertyVideoUpload({ onChange, initialVideo }: PropertyVideoUpl
 
 export default function PropertyMediaUpload({
   onChange,
+  onFilesChange,
   initialImages,
 }: {
   onChange?: (files: (MediaFile | string | null)[]) => void;
+  onFilesChange?: (payload: ImageFilesChangePayload) => void;
   initialImages?: (string | null)[];
 }) {
   return (
     <div className="flex flex-col gap-6">
-      <PropertyImageUpload onChange={onChange} initialImages={initialImages} />
+      <PropertyImageUpload
+        onChange={onChange}
+        onFilesChange={onFilesChange}
+        initialImages={initialImages}
+      />
     </div>
   );
 }

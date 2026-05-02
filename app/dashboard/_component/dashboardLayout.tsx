@@ -7,9 +7,15 @@ import { useState } from "react";
 
 type Props = Readonly<{
    children: React.ReactNode;
+   user: {
+      id: string
+      fullName: string
+      role: UserRole,
+      email: string
+   }
 }>
 
-export function DashboardLayoutClient({ children }: Props) {
+export function DashboardLayoutClient({ children, user }: Props) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
@@ -41,6 +47,7 @@ export function DashboardLayoutClient({ children }: Props) {
             <Topbar 
                onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
                showMenuButton={true}
+               user={user}
             />
 
             <main className="flex-1 overflow-y-auto">

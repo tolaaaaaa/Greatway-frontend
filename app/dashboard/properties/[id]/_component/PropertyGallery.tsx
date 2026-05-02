@@ -1,25 +1,20 @@
+import { Property } from "@/types/property";
 import Image from "next/image";
-import { PropertiesDetailsProps } from "./propertiesDetails";
 
-export default function PropertyGallery({
-  property,
-}: {
-  property: PropertiesDetailsProps;
-}) {
+export default function PropertyGallery({ property }: { property: Property }) {
   return (
     <div className="space-y-3 md:space-y-0 w-full">
       {/* Desktop layout */}
       <div className="hidden md:block relative w-full max-w-full h-auto md:h-140.5">
         <div className="grid grid-cols-[700px_1fr] gap-3 h-full items-center justify-center">
           {/* First image - 676px × 562px */}
-          <div className="h-140.5 rounded-l-[15px] overflow-hidden">
+          <div className="h-140.5 rounded-l-[15px] overflow-hidden  relative">
             <Image
-              src={property.url[0]}
+              src={property.imageUrls[0]}
               alt={property.title}
-              width={676}
-              height={562}
+              fill
               sizes="(min-width: 768px) 676px, 100vw"
-              className="w-full h-auto object-cover"
+              className="object-cover"
               loading="eager"
               priority
             />
@@ -27,7 +22,7 @@ export default function PropertyGallery({
 
           {/* Three smaller images - stacked vertically */}
           <div className="flex flex-col gap-3 h-full">
-            {property.url.slice(1, 4).map((url, index) => (
+            {property.imageUrls.slice(1, 4).map((url, index) => (
               <div
                 key={index}
                 className={`
@@ -55,7 +50,7 @@ export default function PropertyGallery({
         {/* First image on mobile */}
         <div className="rounded-[15px] overflow-hidden">
           <Image
-            src={property.url[0]}
+            src={property.imageUrls[0]}
             alt={property.title}
             width={676}
             height={562}
@@ -68,7 +63,7 @@ export default function PropertyGallery({
 
         {/* Three smaller images in a grid on mobile */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {property.url.slice(1, 4).map((url, index) => (
+          {property.imageUrls.slice(1, 4).map((url, index) => (
             <div key={index} className="rounded-[15px] overflow-hidden">
               <Image
                 src={url}

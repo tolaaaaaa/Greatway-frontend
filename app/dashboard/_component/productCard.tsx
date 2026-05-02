@@ -1,24 +1,44 @@
 import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { Button } from "@/app/component/ui";
-import { ReactNode } from "react";
 import Link from "next/link";
-
-export type PropertyFeature = {
-  item: string;
-  icon: ReactNode;
-};
+import { PropertyFeature } from "@/types/property";
+import { Bed, Bath, Car, Trees, Maximize, Sofa, Warehouse } from "lucide-react";
+import { formatPrice } from "@/utils/formating";
 
 export type PropertyCardProps = {
   id: string;
   url: string;
   title: string;
   location: string;
-  price: number;
+  price: string;
   createdAt: string;
   features: PropertyFeature[];
   status?: "listed" | "unlisted" | "sold";
   onViewDetails?: () => void;
+};
+
+// Map feature.icon text to the component
+const getFeatureIcon = (featureText: string) => {
+  const normalizedText = featureText.toLowerCase().trim();
+
+  if (normalizedText.includes("bedroom")) return <Bed size={16} />;
+  if (normalizedText.includes("bathroom")) return <Bath size={16} />;
+  if (normalizedText.includes("garage")) return <Warehouse size={16} />;
+  if (normalizedText.includes("garden")) return <Trees size={16} />;
+  if (
+    normalizedText.includes("livingroom") ||
+    normalizedText.includes("living room")
+  )
+    return <Sofa size={16} />;
+  if (
+    normalizedText.includes("squarefeet") ||
+    normalizedText.includes("square feet")
+  )
+    return <Maximize size={16} />;
+
+  // Default icon if no match
+  return <Maximize size={16} />;
 };
 
 export default function PropertyCard({
@@ -75,7 +95,7 @@ export default function PropertyCard({
 
       {/* Price */}
       <div className="font-bold text-3xl text-accent">
-        ₦{price.toLocaleString()}
+        {formatPrice(price)}
       </div>
 
       {/* Features */}
@@ -85,26 +105,19 @@ export default function PropertyCard({
             key={idx}
             className="flex items-center gap-2 font-bold text-sm text-muted"
           >
-            {feature.icon}
-            <span>{feature.item}</span>
+            {getFeatureIcon(feature.icon)}
+            <span>{feature.description}</span>
           </div>
         ))}
       </div>
 
       {/* CTA */}
       {!isSold && (
-        <Link
-          href={`/dashboard/properties/${encodeURIComponent(id)}`}
-        >
-          <Button
-            variant="primary"
-            size="lg"
-            fullWidth
-            className="p-5 mt-1"
-          >
+        <Link href={`/dashboard/properties/${encodeURIComponent(id)}`}>
+          <Button variant="primary" size="lg" fullWidth className="p-5 mt-1">
             View Details
-        </Button>
-          </Link>
+          </Button>
+        </Link>
       )}
     </div>
   );

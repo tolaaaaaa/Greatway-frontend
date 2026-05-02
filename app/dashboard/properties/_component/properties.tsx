@@ -4,7 +4,7 @@ import { BreadcrumbItemType, Breadcrumbs } from "@/app/component/ui";
 import PageTitle from "../../_component/pageTitle";
 import { Home, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@heroui/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import PropertyTabs from "./propertyTab";
 import { Bed, Bath, Car, Dock } from "lucide-react";
 import PropertyCard, { PropertyFeature } from "../../_component/productCard";
@@ -17,6 +17,17 @@ export default function Properties() {
   const [activeTab, setActiveTab] = useState<TabOption>("listed");
   const [currentPage, setCurrentPage] = useState(1);
   const topRef = useRef<HTMLElement>(null);
+
+  // Calculate counts for each tab
+  const tabCounts = useMemo(() => {
+    const counts: Record<TabOption, number> = { listed: 0, unlisted: 0, sold: 0 };
+    
+    allProperties.forEach((property) => {
+      counts[property.status]++;
+    });
+    
+    return counts;
+  }, []);
 
   const filteredProperties = allProperties.filter(
     (property) => property.status === activeTab,
@@ -52,20 +63,24 @@ export default function Properties() {
       </div>
 
       <div className="flex justify-between items-center gap-4">
-        <PropertyTabs onChange={handleTabChange} />
+        <PropertyTabs
+          onChange={handleTabChange}
+          value={activeTab}
+          counts={tabCounts}
+        />
         <Link href="/dashboard/properties/new">
-        <Button variant="primary" size="md">
-          <Plus size={16} /> Add Property
-        </Button>
+          <Button variant="primary" size="md" className="rounded-md">
+            <Plus size={16} /> Add Property
+          </Button>
         </Link>
       </div>
 
       {/* Property Grid */}
       {paginatedProperties.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginatedProperties.map((property, index) => (
+          {paginatedProperties.map((property) => (
             <PropertyCard
-              key={index}
+              key={property.id}
               {...property}
               onViewDetails={() => console.log("View", property.title)}
             />
@@ -142,6 +157,7 @@ export default function Properties() {
   );
 }
 
+
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const breadcrumbItems: BreadcrumbItemType[] = [
@@ -157,7 +173,7 @@ const features: PropertyFeature[] = [
 ];
 
 const allProperties: Array<{
-    id: string;
+  id: string;
   url: string;
   title: string;
   location: string;

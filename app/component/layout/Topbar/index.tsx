@@ -8,10 +8,24 @@ import { useState } from "react";
 interface TopbarProps {
   onMenuClick?: () => void;
   showMenuButton?: boolean;
+  user: {
+    id: string;
+    fullName: string;
+    role: UserRole;
+    email: string;
+    avatarUrl?: string; // Make avatarUrl optional
+  };
 }
 
-export default function Topbar({ onMenuClick, showMenuButton = true }: TopbarProps) {
+export default function Topbar({ onMenuClick, showMenuButton = true, user }: TopbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Get user initials from full name (first two names capitalized)
+  const getUserInitials = () => {
+    const names = user.fullName.trim().split(/\s+/);
+    const initials = names.slice(0, 2).map(name => name[0]).join("");
+    return initials.toUpperCase();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-surface border-b border-border font-cambay">
@@ -69,21 +83,27 @@ export default function Topbar({ onMenuClick, showMenuButton = true }: TopbarPro
             {/* User Info - Hidden on mobile */}
             <div className="hidden sm:block text-right">
               <h2 className="text-sm lg:text-xl font-bold text-foreground leading-tight lg:leading-7.5 tracking-[0.01em]">
-                Henry Osas
+                {user.fullName}
               </h2>
-              <p className="text-xs lg:text-base text-muted leading-tight lg:leading-6.25">
-                Admin
+              <p className="text-xs lg:text-base text-muted leading-tight lg:leading-6.25 capitalize">
+                {user.role === "super_admin" ? "Super Admin" : user.role}
               </p>
             </div>
 
-            {/* Profile Image */}
+            {/* Profile Avatar / Badge */}
             <button className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14.5 lg:h-13.75 rounded-full sm:rounded-[5px] overflow-hidden bg-surface-tertiary ring-2 ring-border hover:ring-accent transition-all">
-              <Image
-                src="/user.svg"
-                alt="Henry Osas profile"
-                fill
-                className="object-cover"
-              />
+              {user.avatarUrl ? (
+                <Image
+                  src={user.avatarUrl}
+                  alt={`${user.fullName} profile`}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-accent text-white font-bold text-sm sm:text-base lg:text-lg">
+                  {getUserInitials()}
+                </div>
+              )}
             </button>
           </div>
         </div>

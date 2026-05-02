@@ -17,6 +17,7 @@ type CheckboxProps = {
   isReadOnly?: boolean
   value?: string
   className?: string
+  checkboxClassName?: string  // New prop for checkbox control styling
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -34,6 +35,7 @@ export default function Checkbox({
   isReadOnly = false,
   value,
   className = '',
+  checkboxClassName = '',  // New prop with default empty string
   size = 'md'
 }: CheckboxProps) {
   const checkboxId = id || `checkbox-${name}-${React.useId()}`
@@ -65,10 +67,23 @@ export default function Checkbox({
         isReadOnly={isReadOnly}
         className="gap-2"
       >
-        <HeroCheckbox.Control className={`${sizeClasses[size]} shrink-0 border-2 border-muted rounded-sm data-[invalid=true]:border-(--danger) data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed transition-all duration-200`}>
+        <HeroCheckbox.Control 
+          className={`
+            ${sizeClasses[size]} 
+            shrink-0 
+            border-2 
+            border-muted 
+            rounded-sm 
+            data-[invalid=true]:border-(--danger) 
+            data-[disabled=true]:opacity-50 
+            data-[disabled=true]:cursor-not-allowed 
+            transition-all 
+            duration-200
+            ${checkboxClassName}
+          `}
+        >
           <HeroCheckbox.Indicator
             className={`
-              ${className}
               data-[indeterminate=true]:bg-foreground
               data-[indeterminate=true]:rounded-sm
               data-[indeterminate=true]:before:block

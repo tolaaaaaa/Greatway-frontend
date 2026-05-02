@@ -24,6 +24,7 @@ export default function RootLayout({
       lang="en"
       data-theme="dark"
       className={`${cambay.variable} h-full antialiased`}
+      suppressHydrationWarning 
     >
       <body className="min-h-screen flex flex-col">
         <ToastProvider>{children}</ToastProvider>

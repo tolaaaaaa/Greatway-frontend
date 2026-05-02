@@ -1,62 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import { PropertiesDetailsProps } from "../[id]/_component/propertiesDetails";
-import PropertyForm, { PropertyFormValues } from "./propertyForm";
+import PropertyForm, { PropertyFiles } from "./propertyForm";
 import PropertyDetailsHeader from "../[id]/_component/PropertyDetailsHeader";
+import { CreatePropertyFormValues } from "@/validations/property/create-property.validation";
+
 
 type PropertyFormContainerProps = {
   mode: "create" | "edit";
-  property?: PropertiesDetailsProps;
-  onSave?: (values: PropertyFormValues) => Promise<void> | void;
+  initialValues: CreatePropertyFormValues;
+  error?: string;
+  errors?: Partial<
+    Record<
+      | "title"
+      | "salesPrice"
+      | "location"
+      | "description"
+      | "features"
+      | "supportInCharge"
+      | "whatsAppNumber"
+      | "altNumber"
+      | "imageUrls"
+      | "videoUrl"
+      | "saleSupportAvatar",
+      string | undefined
+    >
+  >;
+  onSave?: (values: CreatePropertyFormValues) => Promise<void> | void;
+  onFilesChange?: (files: PropertyFiles) => void;
+  isSaving?: boolean;
 };
 
 export default function PropertyFormContainer({
   mode,
-  property,
+  initialValues,
+  error,
+  errors = {},
   onSave,
+  onFilesChange,
+  isSaving = false,
 }: PropertyFormContainerProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const [formValues, setFormValues] = useState<PropertyFormValues>({
-    title: property?.title ?? "",
-    salesPrice: "",
-    location: property?.location ?? "",
-    description: "",
-    features: {
-      bedrooms: "",
-      bathrooms: "",
-      garage: "",
-      livingRoom: "",
-      squareFeet: "",
-      garden: "",
-    },
-    supportInCharge: "",
-    whatsappLink: "",
-    callContact: "",
-    images: [],
-    video: null,
-    supportImage: null,
-  });
+  const [formValues, setFormValues] = useState<CreatePropertyFormValues>(initialValues);
 
   const handleSave = async () => {
-    try {
-      setIsSaving(true);
-      await onSave?.(formValues);
-    } finally {
-      setIsSaving(false);
-    }
+    await onSave?.(formValues);
   };
 
   return (
     <div className="space-y-6">
       <PropertyDetailsHeader
         mode={mode}
-        property={property}
+        property={formValues}
         onSave={handleSave}
         isSaving={isSaving}
-        title={mode === "create" ? formValues.title || "New Property" : undefined}
+        title={
+          mode === "create" ? formValues.title || "New Property" : undefined
+        }
       />
-      <PropertyForm values={formValues} onChange={setFormValues} />
+      <PropertyForm
+        values={formValues}
+        onChange={setFormValues}
+        onFilesChange={onFilesChange}
+        errors={errors}
+      />
     </div>
   );
 }

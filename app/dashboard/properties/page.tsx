@@ -1,5 +1,5 @@
-import Properties from "./_component/properties";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-    return <Properties />
+  redirect("/dashboard/properties/listed");
 }

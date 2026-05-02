@@ -1,42 +1,42 @@
-import { Bath, Bed, CarFront, Square } from "lucide-react";
-import PropertiesDetails, { PropertiesDetailsProps, salesProps } from "./_component/propertiesDetails";
+import { getProperty } from "@/actions/property.action";
+import PropertiesDetails from "./_component/propertiesDetails";
+import { Suspense } from "react";
+import PropertiesDetailsSkeleton from "./_component/propertyDetailSkeleton";
+
+
+export const revalidate = 60;
+
+
+export async function generateStaticParams() {
+  return [];
+}
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const property: PropertiesDetailsProps = {
-    id: "1",
-    url: [
-      "/list4.png",
-      "/list3.png",
-      "/list2.png",
-      "/list1.png",
-    ],
-    title: "Residential Property in Lekki",
-    location: "Lekki, Lagos",
-    price: 500000000,
-    createdAt: "20/05/2025",
-    description: "Beautiful residential property in a prime location in Lekki.",
-    status: "listed",
-    video: "/testvideo.mp4",
-    features: [
-      { item: "4 Bedrooms", icon: <Bed size={16} /> },
-      { item: "3 Bathrooms", icon: <Bath size={16} /> },
-      { item: "Garage", icon: <CarFront size={16} /> },
-      { item: "3 Square Feet", icon: <Square size={16} /> },
-    ],
-  };
+  const id = (await params).id;
+  
+  return (
+    <Suspense fallback={<PropertiesDetailsSkeleton />}>
+      <PropertyDetailsContent id={id} />
+    </Suspense>
+  );
+}
 
-  const sales: salesProps = {
-    id: "1",
-    url: "/sales.png",
-    title: "John Doe",
-    role: "Sales Agent",
-    phoneNumber: "+234 123 4567",
-    whatsappNumber: "+234 123 4567",
+// Separate async component for better Suspense handling
+async function PropertyDetailsContent({ id }: { id: string }) {
+  const property = await getProperty(id);
+
+  if (!property) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-100 gap-4">
+        <h2 className="text-2xl font-bold">Property Not Found</h2>
+        <p className="text-muted">The property you're looking for doesn't exist or has been removed.</p>
+      </div>
+    );
   }
 
-  return <PropertiesDetails property={property} sales={sales} />;
+  return <PropertiesDetails property={property} />;
 }

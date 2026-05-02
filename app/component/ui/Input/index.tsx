@@ -14,9 +14,13 @@ type BaseProps = {
   endContent?: string | ReactNode
   startContent?: string | ReactNode
   disabled?: boolean
+  rows?: number
   error?: string
   isClearable?: boolean
+  /** Applied to the input/textarea element */
   className?: string
+  /** Applied to the label element */
+  labelClassName?: string
 }
 
 type TextOrNumberProps = BaseProps & {
@@ -42,9 +46,11 @@ export default function DynamicInput({
   endContent,
   startContent,
   disabled,
+  rows = 6,
   error,
   isClearable,
-  className = ''
+  className = '',
+  labelClassName = '',
 }: Props) {
   const id = React.useId()
   const normalizedValue = value != null ? String(value) : ''
@@ -91,11 +97,6 @@ export default function DynamicInput({
       ? 'text-[var(--accent)]'
       : 'text-[var(--muted)]'
 
-  const commonHandlers = {
-    onFocus: () => setIsFocused(true),
-    onBlur: () => setIsFocused(false)
-  }
-
   const renderContent = (content?: string | ReactNode, position?: 'start' | 'end') => {
     if (!content) return null
     return typeof content === 'string' ? (
@@ -110,7 +111,11 @@ export default function DynamicInput({
   const labelContent = label && (
     <label
       htmlFor={id}
-      className={`text-xl font-cambay font-bold transition-all duration-200 ${labelClass}`}
+      className={[
+        'text-xl font-cambay font-bold transition-all duration-200',
+        labelClass,
+        labelClassName,
+      ].filter(Boolean).join(' ')}
     >
       {label}
     </label>
@@ -118,7 +123,7 @@ export default function DynamicInput({
 
   let inputContent: ReactNode = null
 
-  // SELECT INPUT
+  // SELECT
   if (type === 'select' && options) {
     inputContent = (
       <Select
@@ -131,14 +136,14 @@ export default function DynamicInput({
         placeholder={placeholder}
         className="w-full"
       >
-        {label && <Label className={`text-xs font-medium transition-all duration-200 ${labelClass}`}>{label}</Label>}
         <Select.Trigger
-          className={`
-            border ${borderClass} ${bgClass} rounded-md py-3 px-2.5 w-full text-sm ${textClass}
-            transition-all duration-200 ease-in-out
-            ${currentError ? '' : 'hover:border-(--accent)/70'}
-            data-[open=true]:scale-[1.02] ${className}
-          `}
+          className={[
+            `border ${borderClass} ${bgClass} rounded-md py-3 px-2.5 w-full text-sm ${textClass}`,
+            'transition-all duration-200 ease-in-out',
+            currentError ? '' : 'hover:border-(--accent)/70',
+            'data-[open=true]:scale-[1.02]',
+            className,
+          ].filter(Boolean).join(' ')}
         >
           <Select.Value />
           <Select.Indicator />
@@ -146,19 +151,13 @@ export default function DynamicInput({
         <Select.Popover className="rounded-md">
           <ListBox
             items={options}
-            className={`
-              border-border rounded-md bg-overlay text-overlay-foreground text-sm
-              max-h-62.5 overflow-y-auto p-0
-            `}
+            className="border-border rounded-md bg-overlay text-overlay-foreground text-sm max-h-62.5 overflow-y-auto p-0"
           >
             {(item) => (
               <ListBox.Item
                 id={item.key}
                 textValue={item.label}
-                className={`
-                  py-2 px-3 cursor-pointer transition-all duration-150
-                  hover:bg-surface-secondary data-[selected=true]:bg-(--accent)/10
-                `}
+                className="py-2 px-3 cursor-pointer transition-all duration-150 hover:bg-surface-secondary data-[selected=true]:bg-(--accent)/10"
               >
                 {item.label}
               </ListBox.Item>
@@ -169,10 +168,10 @@ export default function DynamicInput({
     )
   }
 
-  // TEXTAREA INPUT
+  // TEXTAREA
   else if (type === 'textarea') {
     const hasContent = startContent || endContent
-    
+
     const textAreaContent = (
       <TextArea
         id={id}
@@ -180,27 +179,30 @@ export default function DynamicInput({
         aria-label={name}
         placeholder={placeholder}
         disabled={disabled}
-        rows={6}
+        rows={rows}
         defaultValue={normalizedValue}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`
-          border ${borderClass} ${bgClass} rounded-md w-full p-2 resize-none
-          transition-all duration-200 ease-in-out outline-none
-          ${currentError ? '' : 'hover:border-(--accent)/70'}
-          ${textClass}
-        `}
+        className={[
+          `border ${borderClass} ${bgClass} rounded-md w-full p-2 resize-none`,
+          'transition-all duration-200 ease-in-out outline-none',
+          currentError ? '' : 'hover:border-(--accent)/70',
+          textClass,
+          className,
+        ].filter(Boolean).join(' ')}
       />
     )
 
     if (hasContent) {
       inputContent = (
-        <InputGroup className={`
-          border ${borderClass} ${bgClass} rounded-md w-full p-0 resize-none
-          transition-all duration-200 ease-in-out
-          ${currentError ? '' : 'hover:border-(--accent)/70'}
-        `}>
+        <InputGroup
+          className={[
+            `border ${borderClass} ${bgClass} rounded-md w-full p-0 resize-none`,
+            'transition-all duration-200 ease-in-out',
+            currentError ? '' : 'hover:border-(--accent)/70',
+          ].filter(Boolean).join(' ')}
+        >
           {startContent && <InputGroup.Prefix>{renderContent(startContent, 'start')}</InputGroup.Prefix>}
           {textAreaContent}
           {endContent && <InputGroup.Suffix>{renderContent(endContent, 'end')}</InputGroup.Suffix>}
@@ -211,23 +213,21 @@ export default function DynamicInput({
     }
   }
 
-  // TEXT / NUMBER / EMAIL / PASSWORD INPUT
+  // TEXT / NUMBER / EMAIL / PASSWORD
   else {
     const isPassword = type === 'password'
     const resolvedType = isPassword && showPassword ? 'text' : type
-
     const hasContent = startContent || endContent
+
     const passwordToggle = isPassword && (
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
         className="focus:outline-none transition-transform duration-200 hover:scale-110 px-2"
       >
-        {showPassword ? (
-          <EyeSlashIcon className="text-muted w-5 h-5" />
-        ) : (
-          <EyeIcon className="text-muted w-5 h-5" />
-        )}
+        {showPassword
+          ? <EyeSlashIcon className="text-muted w-5 h-5" />
+          : <EyeIcon className="text-muted w-5 h-5" />}
       </button>
     )
 
@@ -243,27 +243,33 @@ export default function DynamicInput({
         onChange={(e) => handleChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`
-          border ${borderClass} ${bgClass} rounded-md transition-all duration-200 ease-in-out outline-none p-2
-          ${currentError ? '' : 'hover:border-(--accent)/70'} hover:bg-surface-secondary
-          ${textClass}
-        `}
+        className={[
+          `border ${borderClass} ${bgClass} rounded-md`,
+          'transition-all duration-200 ease-in-out outline-none p-2',
+          currentError ? '' : 'hover:border-(--accent)/70',
+          'hover:bg-surface-secondary',
+          textClass,
+          className,  // ← was missing here
+        ].filter(Boolean).join(' ')}
       />
     )
 
     if (isPassword || hasContent) {
       inputContent = (
-        <InputGroup className={`
-          border ${borderClass} ${bgClass} rounded-md w-full transition-all duration-200 ease-in-out
-          ${currentError ? '' : 'hover:border-(--accent)/70'}
-        `}>
+        <InputGroup
+          className={[
+            `border ${borderClass} ${bgClass} rounded-md w-full`,
+            'transition-all duration-200 ease-in-out',
+            currentError ? '' : 'hover:border-(--accent)/70',
+          ].filter(Boolean).join(' ')}
+        >
           {startContent && <InputGroup.Prefix>{renderContent(startContent, 'start')}</InputGroup.Prefix>}
           {inputElement}
-          {isPassword ? (
-            <InputGroup.Suffix>{passwordToggle}</InputGroup.Suffix>
-          ) : endContent ? (
-            <InputGroup.Suffix>{renderContent(endContent, 'end')}</InputGroup.Suffix>
-          ) : null}
+          {isPassword
+            ? <InputGroup.Suffix>{passwordToggle}</InputGroup.Suffix>
+            : endContent
+              ? <InputGroup.Suffix>{renderContent(endContent, 'end')}</InputGroup.Suffix>
+              : null}
         </InputGroup>
       )
     } else {
