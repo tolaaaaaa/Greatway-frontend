@@ -161,14 +161,14 @@ export default function GalleryComponent({ gallery }: Props) {
           </div>
         )}
 
-        <div className="flex justify-center items-center">
+        {gallery.items.length > 0 && <div className="flex justify-center items-center">
           <button
             onClick={scrollToTop}
             className="font-bold text-[18px] underline text-white hover:text-white/70 transition-colors cursor-pointer"
           >
             Back To Top
           </button>
-        </div>
+        </div>}
       </main>
 
       {/* Confirm Delete */}

@@ -1,6 +1,6 @@
 import { TabOption, Tabs } from "@/app/component/ui";
 
-export type CareerTabType = "Opens Jobs" | "Closed Jobs";
+export type CareerTabType = "open" | "closed";
 
 interface CareerTabsProps {
   onChange: (tab: CareerTabType) => void;
@@ -9,14 +9,14 @@ interface CareerTabsProps {
 }
 
 const tabOptions: TabOption<CareerTabType>[] = [
-  { id: "Opens Jobs", label: "Open Jobs" },
-  { id: "Closed Jobs", label: "Closed Job" },
+  { id: "open", label: "Open Jobs" },
+  { id: "closed", label: "Closed Job" },
 ];
 
 export default function CareerTabs({
   onChange,
   counts,
-  value = "Opens Jobs",
+  value = "open",
 }: CareerTabsProps) {
   const optionsWithCounts = tabOptions.map((option) => ({
     ...option,

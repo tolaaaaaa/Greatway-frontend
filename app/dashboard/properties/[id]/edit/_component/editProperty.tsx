@@ -120,7 +120,7 @@ export default function EditProperty({ property }: EditPropertyProps) {
         mode="edit"
         error={error}
         errors={errors}
-        initialValues={values} // ✅ use values from state so form repopulates on error
+        initialValues={values}
         onSave={handleSave}
         onFilesChange={(files) => {
           filesRef.current = files;

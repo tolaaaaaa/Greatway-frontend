@@ -3,30 +3,20 @@
 import React from "react";
 import { Column, DataTable } from "@/app/component/ui";
 import { CareerActionsDropdown } from "./careerDropdown";
-
-export type CareerStatus = "Open" | "Closed" | "Draft";
-
-export interface Career {
-  id: string;
-  jobTitle: string;
-  employmentType: string;
-  location: string;
-  datePosted: string;
-  status: CareerStatus;
-}
+import { formatDate } from "@/utils/formating";
 
 interface CareerTableProps {
   data: Career[];
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
-  onActionClick?: (id: string) => void;
+  onDeleteClick?: (id: string) => void;
+  onStatusChange?: (id: string, newStatus: 'open' | 'closed') => void;
 }
 
 const statusStyles: Record<CareerStatus, string> = {
-  Open: "text-[#06CD70]",
-  Closed: "text-[#FF4D4F]",
-  Draft: "text-[#667085]",
+  open: "text-[#06CD70]",
+  closed: "text-[#FF4D4F]",
 };
 
 export default function CareerTable({
@@ -34,13 +24,19 @@ export default function CareerTable({
   currentPage,
   totalPages,
   onPageChange,
-  onActionClick,
+  onDeleteClick,
+  onStatusChange,
 }: CareerTableProps) {
   const columns: Column<Career>[] = [
-    { key: "jobTitle", label: "Job Title", width: "202px" },
+    { key: "title", label: "Job Title", width: "202px" },
     { key: "employmentType", label: "Employment Type", width: "213px" },
     { key: "location", label: "Location", width: "162px" },
-    { key: "datePosted", label: "Date Posted", width: "132px" },
+    {
+      key: "createdAt",
+      label: "Date Posted",
+      width: "132px",
+      render: (item: Career) => <span>{formatDate(item.createdAt)}</span>,
+    },
     {
       key: "status",
       label: "Status",
@@ -56,7 +52,9 @@ export default function CareerTable({
       render: (item: Career) => (
         <CareerActionsDropdown
           id={item.id}
-          onDelete={(id) => onActionClick?.(id)}
+          status={item.status}
+          onDelete={onDeleteClick}
+          onStatusChange={onStatusChange}
         />
       ),
     },

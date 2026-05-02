@@ -31,3 +31,9 @@ function formatProperties(properties: Record<string, { errors: string[]; propert
 export function formatPrice(price: string) {
   return `₦${Number(price).toLocaleString("en-US")}`
 }
+
+
+export const formatDate = (date: Date | string) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return dateObj.toDateString();
+};

@@ -1,177 +1,172 @@
 "use client";
 
-import { BreadcrumbItemType, Breadcrumbs, Button } from "@/app/component/ui";
-import { Home } from "lucide-react";
-import PageTitle from "../../_component/pageTitle";
-import CareerTabs, { CareerTabType } from "./careerTab";
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { Career as CareerType } from "./careerTable";
+import { useState } from "react";
 import CareerTable from "./careerTable";
+import { Dialog } from "@/app/component/ui";
+import { useRouter } from "next/navigation";
+import { deleteCareer, updateCareerStatus } from "@/actions/career.action";
 
-const ITEMS_PER_PAGE = 5;
+type Props = {
+  career: Pagination<Career>;
+};
 
-export default function Career() {
-  const [activeTab, setActiveTab] = useState<CareerTabType>("Opens Jobs");
+export default function Career({ career }: Props) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Delete states
+  const [showDeleteModal, setDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [careerToDelete, setCareerToDelete] = useState<string | null>(null);
 
-  // Filter data by active tab
-  const filteredData = useMemo(() => {
-    switch (activeTab) {
-      case "Opens Jobs":
-        return careersData.filter(
-          (c) => c.status === "Open" || c.status === "Draft",
-        );
-      case "Closed Jobs":
-        return careersData.filter((c) => c.status === "Closed");
-      default:
-        return careersData;
-    }
-  }, [activeTab]);
+  // Status change states
+  const [showStatusModal, setStatusModal] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusSuccess, setStatusSuccess] = useState(false);
+  const [selectedCareer, setSelectedCareer] = useState<{
+    id: string;
+    newStatus: "open" | "closed";
+  } | null>(null);
 
-  // Counts per tab
-  const tabCount = useMemo(() => {
-    return {
-      "Opens Jobs": careersData.filter(
-        (c) => c.status === "Open" || c.status === "Draft",
-      ).length,
-      "Closed Jobs": careersData.filter((c) => c.status === "Closed").length,
-    } satisfies Record<CareerTabType, number>;
-  }, []);
+  const paginatedData = career.items as Career[];
 
-  // Pagination
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredData.length / ITEMS_PER_PAGE),
-  );
-
-  const paginatedData = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredData.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredData, currentPage]);
-
-  const handleTabChange = (tab: CareerTabType) => {
-    setActiveTab(tab);
-    setCurrentPage(1);
+  // Delete handlers
+  const handleDeleteClick = (id: string) => {
+    setCareerToDelete(id);
+    setDeleteModal(true);
   };
 
-  const handleActionClick = (id: string) => {
-    console.log("Action clicked for career:", id);
-    // TODO: open dropdown/modal for edit, delete, etc.
+  const handleDelete = async () => {
+    if (!careerToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      // Add your API call here to delete
+      await deleteCareer(careerToDelete);
+      
+      setDeleteModal(false);
+      setDeleteSuccess(true);
+    } catch (error) {
+      console.error("Failed to delete career:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Status change handlers
+  const handleStatusUpdateClick = (id: string, newStatus: "open" | "closed") => {
+    setSelectedCareer({ id, newStatus });
+    setStatusModal(true);
+  };
+
+  const handleStatusChange = async () => {
+    if (!selectedCareer) return;
+
+    setIsUpdatingStatus(true);
+    try {
+      // Add your API call here to update status
+      await updateCareerStatus(selectedCareer.id, selectedCareer.newStatus);
+
+      setStatusModal(false);
+      setStatusSuccess(true);
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   return (
-    <main className="font-cambay space-y-10">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <PageTitle title="Career Management" />
-        <Breadcrumbs items={breadcrumbItems} separator="/" />
-      </div>
-
-      {/* Tabs + CTA */}
-      <div className="flex justify-between items-center gap-4">
-        <CareerTabs
-          onChange={handleTabChange}
-          counts={tabCount}
-          value={activeTab}
-        />
-
-        <Link href="/dashboard/careers/new">
-          <Button variant="primary" size="md" className="rounded-md">
-            Post New Job
-          </Button>
-        </Link>
-      </div>
-
+    <>
       <div className="bg-surface p-6">
         <CareerTable
           data={paginatedData}
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={career.metadata.totalPages}
           onPageChange={setCurrentPage}
-          onActionClick={handleActionClick}
+          onDeleteClick={handleDeleteClick}
+          onStatusChange={handleStatusUpdateClick}
         />
       </div>
-    </main>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setDeleteModal(false);
+          setCareerToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        isLoading={isDeleting}
+        mode="confirm"
+        title="Are you sure you want to delete this job?"
+        description="This action cannot be undone."
+        confirmLabel="Yes"
+        cancelLabel="No"
+      />
+
+      {/* Delete Success Dialog */}
+      <Dialog
+        isOpen={deleteSuccess}
+        onClose={() => setDeleteSuccess(false)}
+        onConfirm={() => {}}
+        mode="success"
+        title="Job Deleted Successfully!"
+        description="This job has been permanently deleted."
+        onContinue={() => {
+          setDeleteSuccess(false);
+          setCareerToDelete(null);
+          router.refresh();
+        }}
+      />
+
+      {/* Status Update Confirmation Dialog */}
+      <Dialog
+        isOpen={showStatusModal}
+        onClose={() => {
+          setStatusModal(false);
+          setSelectedCareer(null);
+        }}
+        onConfirm={handleStatusChange}
+        isLoading={isUpdatingStatus}
+        mode="confirm"
+        title={
+          selectedCareer?.newStatus === "closed"
+            ? "Are you sure you want to close this job?"
+            : "Are you sure you want to open this job?"
+        }
+        description={
+          selectedCareer?.newStatus === "closed"
+            ? "This job will no longer accept applications."
+            : "This job will be visible and accept applications again."
+        }
+        confirmLabel="Yes"
+        cancelLabel="No"
+      />
+
+      {/* Status Update Success Dialog */}
+      <Dialog
+        isOpen={statusSuccess}
+        onClose={() => setStatusSuccess(false)}
+        onConfirm={() => {}}
+        mode="success"
+        title={
+          selectedCareer?.newStatus === "closed"
+            ? "Job Closed Successfully!"
+            : "Job Opened Successfully!"
+        }
+        description={
+          selectedCareer?.newStatus === "closed"
+            ? "This job is now closed and no longer accepting applications."
+            : "This job is now open and accepting applications."
+        }
+        onContinue={() => {
+          setStatusSuccess(false);
+          setSelectedCareer(null);
+          router.refresh();
+        }}
+      />
+    </>
   );
 }
-
-const breadcrumbItems: BreadcrumbItemType[] = [
-  { label: "Home", href: "/", icon: <Home size={16} /> },
-  { label: "Career", href: "/dashboard/career", isCurrent: true },
-];
-
-const careersData: CareerType[] = [
-  {
-    id: "1",
-    jobTitle: "Office Manager",
-    employmentType: "On-site",
-    location: "Magodo Phase 2",
-    datePosted: "31-03-2026",
-    status: "Open",
-  },
-  {
-    id: "2",
-    jobTitle: "Software Engineer",
-    employmentType: "Remote",
-    location: "Lagos, Nigeria",
-    datePosted: "30-03-2026",
-    status: "Open",
-  },
-  {
-    id: "3",
-    jobTitle: "Marketing Specialist",
-    employmentType: "Hybrid",
-    location: "Victoria Island",
-    datePosted: "29-03-2026",
-    status: "Closed",
-  },
-  {
-    id: "4",
-    jobTitle: "Sales Representative",
-    employmentType: "On-site",
-    location: "Ikeja",
-    datePosted: "28-03-2026",
-    status: "Draft",
-  },
-  {
-    id: "5",
-    jobTitle: "Product Designer",
-    employmentType: "Remote",
-    location: "Remote",
-    datePosted: "27-03-2026",
-    status: "Open",
-  },
-  {
-    id: "6",
-    jobTitle: "HR Manager",
-    employmentType: "On-site",
-    location: "Lekki Phase 1",
-    datePosted: "26-03-2026",
-    status: "Open",
-  },
-  {
-    id: "7",
-    jobTitle: "Data Analyst",
-    employmentType: "Hybrid",
-    location: "Yaba",
-    datePosted: "25-03-2026",
-    status: "Closed",
-  },
-  {
-    id: "8",
-    jobTitle: "Customer Support",
-    employmentType: "Remote",
-    location: "Remote",
-    datePosted: "24-03-2026",
-    status: "Open",
-  },
-  {
-    id: "9",
-    jobTitle: "Content Writer",
-    employmentType: "Contract",
-    location: "Remote",
-    datePosted: "23-03-2026",
-    status: "Draft",
-  },
-];

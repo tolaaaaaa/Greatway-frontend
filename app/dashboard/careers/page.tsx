@@ -1,5 +1,5 @@
-import Career from "./_component/careerComponent";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <Career />
+  redirect("/dashboard/careers/open")
 }

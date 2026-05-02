@@ -69,7 +69,7 @@ export function Dropdown({ trigger, items, align = 'right', className }: Dropdow
         >
           {items.map((item) => {
             const baseClass = [
-              'flex items-center gap-2 w-full px-4 py-2.5 text-left transition-colors',
+              'flex items-center gap-2 w-full px-4 py-2.5 text-left transition-colors cursor-pointer',
               'hover:bg-white/10 focus:bg-white/10 focus:outline-none',
               item.destructive ? 'text-[#FF4D4F]' : 'text-white',
             ].join(' ');

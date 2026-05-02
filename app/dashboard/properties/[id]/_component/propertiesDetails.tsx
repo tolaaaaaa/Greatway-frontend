@@ -36,7 +36,7 @@ export default function PropertiesDetails({
   const [isPending, setIsPending] = useState(false);
   const [successStatus, setSuccessStatus] = useState<StatusAction>(null);
 
-  // ✅ One function, drives everything
+
   const handleStatusUpdate = async (status: NonNullable<StatusAction>) => {
     setIsPending(true);
     const result = await updatePropertyStatus(property.id, status);
@@ -100,10 +100,8 @@ export default function PropertiesDetails({
 
         <PropertyDetailsHeader
           property={property}
-          // ✅ Now actually calls the API, not just sets state
           onToggleListing={() => handleStatusUpdate(toggleStatus)}
           isTogglingListing={isPending}
-          // ✅ Success is driven by successStatus, not internal header state
           showToggleSuccess={
             successStatus === "listed" || successStatus === "unlisted"
           }
