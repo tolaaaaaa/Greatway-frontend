@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@/constant/constants";
+import { USER_ROLE, USER_STATUS } from "@/constant/constants";
 import { FormState } from "@/types";
 import { z } from "zod";
 
@@ -6,8 +6,7 @@ export const createUserSchema = z.object({
   fullName: z
     .string()
     .min(2, { message: "Full name must be at least 2 characters long" })
-    .max(100, { message: "Full name cannot exceed 100 characters" })
-    .optional(),
+    .max(100, { message: "Full name cannot exceed 100 characters" }),
 
   email: z
     .string()
@@ -18,11 +17,12 @@ export const createUserSchema = z.object({
     .string()
     .min(6, { message: "Password must be at least 6 characters long" }),
 
+    status: z.enum(Object.values(USER_STATUS) as [string, ...string[]]),
+
   role: z
     .enum(Object.values(USER_ROLE) as [string, ...string[]], {
       error: "Invalid role selected",
-    })
-    .optional(),
+    }),
 });
 
 // Export types

@@ -1,4 +1,4 @@
-import { USER_ROLE } from "@/constant/constants";
+import { USER_ROLE, USER_STATUS } from "@/constant/constants";
 import { FormState } from "@/types";
 import { z } from "zod";
 
@@ -18,6 +18,10 @@ export const updateUserSchema = z.object({
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters long" })
+    .optional(),
+
+  status: z
+    .enum(Object.values(USER_STATUS) as [string, ...string[]])
     .optional(),
 
   role: z

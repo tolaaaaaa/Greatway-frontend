@@ -8,7 +8,7 @@ interface AdminActionsDropdownProps {
   id: string;
   currentStatus: 'active' | 'inactive';
   onEdit?: (id: string) => void;
-  onDeactivate?: (id: string) => void;
+  onDeactivate?: (id: string, status: UserStatus) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -30,7 +30,7 @@ export function AdminActionsDropdown({
       key: 'deactivate',
       label: currentStatus === 'active' ? 'Deactivate' : 'Activate',
       icon: <Ban size={14} />,
-      onClick: () => onDeactivate?.(id),
+      onClick: () => onDeactivate?.(id, currentStatus === 'active' ? 'inactive' : 'active',),
     },
     {
       key: 'delete',

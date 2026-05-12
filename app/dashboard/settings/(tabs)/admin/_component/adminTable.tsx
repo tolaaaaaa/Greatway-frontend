@@ -4,32 +4,26 @@ import React from "react";
 import { Column, DataTable } from "@/app/component/ui";
 import { AdminActionsDropdown } from "./adminDropdown";
 
-export type AdminStatus = "active" | "inactive";
-
-export interface Admin {
-  id: string;
-  fullName: string;
-  emailAddress: string;
-  phoneNumber: string;
-  role: string;
-  status: AdminStatus;
-  date: string;
-}
-
 interface AdminTableProps {
-  data: Admin[];
+  data: User[];
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
   onEdit?: (id: string) => void;
-  onDeactivate?: (id: string) => void;
+  onDeactivate?: (id: string, status: UserStatus) => void;
   onDelete?: (id: string) => void;
 }
 
-const statusStyles: Record<AdminStatus, string> = {
-  active: "text-accent",
-  inactive: "text-danger",
+const roleStyles: Record<UserRole, string> = {
+  user: "text-muted",
+  admin: "text-accent",
+  super_admin: "text-warning",
 };
+
+const statusStyle: Record<UserStatus, string> = {
+  active: "text-accent",
+  inactive: "text-danger"
+}
 
 export default function AdminTable({
   data,
@@ -40,52 +34,53 @@ export default function AdminTable({
   onDeactivate,
   onDelete,
 }: AdminTableProps) {
-  const columns: Column<Admin>[] = [
-    { 
-      key: "fullName", 
-      label: "Full Name", 
-      width: "180px" 
+  const columns: Column<User>[] = [
+    {
+      key: "fullName",
+      label: "Full Name",
+      width: "180px",
     },
-    { 
-      key: "emailAddress", 
-      label: "Email Address", 
-      width: "220px" 
+    {
+      key: "email",
+      label: "Email Address",
+      width: "220px",
     },
-    { 
-      key: "phoneNumber", 
-      label: "Phone Number", 
-      width: "150px" 
-    },
-    { 
-      key: "role", 
-      label: "Role", 
-      width: "120px" 
+    {
+      key: "role",
+      label: "Role",
+      width: "120px",
+      render: (item: User) => (
+        <span className={roleStyles[item.role]}>
+          {item.role.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+        </span>
+      ),
     },
     {
       key: "status",
       label: "Status",
-      width: "100px",
-      render: (item: Admin) => (
-        <span className={statusStyles[item.status]}>
-          {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-        </span>
-      ),
+      width: "140px",
+      render: (item: User) => (
+        <span className={statusStyle[item.status]}>{item.status.toUpperCase()}</span>
+      )
     },
-    { 
-      key: "date", 
-      label: "Date", 
-      width: "120px" 
+    {
+      key: "createdAt",
+      label: "Date Joined",
+      width: "140px",
+      render: (item: User) => (
+        <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+      ),
     },
     {
       key: "action",
       label: "Action",
       width: "80px",
-      render: (item: Admin) => (
+      render: (item: User) => (
         <AdminActionsDropdown
           id={item.id}
-          currentStatus={item.status}
           onEdit={onEdit}
           onDeactivate={onDeactivate}
+          currentStatus={item.status}
           onDelete={onDelete}
         />
       ),

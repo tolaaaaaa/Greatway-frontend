@@ -28,33 +28,29 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   const activeTab = (pathname.split("/").pop() as SettingsTab) ?? "general";
 
   return (
-    <main className="font-cambay space-y-10">
-      <div className="flex justify-between items-center">
-        <PageTitle title="Settings" />
-        <Breadcrumbs items={breadcrumbItems} separator="/" />
-      </div>
+    <>
+      <main className="font-cambay space-y-10">
+        <div className="flex justify-between items-center">
+          <PageTitle title="Settings" />
+          <Breadcrumbs items={breadcrumbItems} separator="/" />
+        </div>
 
-      <div className="flex w-full justify-between items-center">
-        <Tabs
-          options={TAB_OPTIONS}
-          value={activeTab}
-          onChange={(tab) => router.push(`/dashboard/settings/${tab}`)}
-          variant="default"
-        />
+        <div className="flex w-full justify-between items-center">
+          <Tabs
+            options={TAB_OPTIONS}
+            value={activeTab}
+            onChange={(tab) => router.push(`/dashboard/settings/${tab}`)}
+            variant="default"
+          />
 
-        {activeTab === "admin" && (
-          <Button onClick={() => setIsOpen(true)}>
-            Add New Admin
-          </Button>
-        )}
-      </div>
+          {activeTab === "admin" && (
+            <Button onClick={() => setIsOpen(true)}>Add New Admin</Button>
+          )}
+        </div>
 
-      <div>{children}</div>
-
-     { <AddAdmin 
-        isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
-      />}
-    </main>
+        <div>{children}</div>
+      </main>
+      {<AddAdmin isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+    </>
   );
 }

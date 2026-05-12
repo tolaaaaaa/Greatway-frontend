@@ -2,8 +2,13 @@
 import EmailInput from "./settingEmailInput";
 import SettingsSection from "./settingsSection";
 import SwitchItem from "./settingSwitch";
+import { useState } from "react";
+import { Input } from "@/app/component/ui";
 
 export default function GeneralSettings() {
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [password, setPassword] = useState("");
+
   const notificationItems = [
     "New Booking",
     "New Upload",
@@ -54,17 +59,36 @@ export default function GeneralSettings() {
 
       {/* Security */}
       <SettingsSection title="Security">
-        <div className="flex justify-between">
-          <div className="flex flex-col">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-1">
             <h3>Password</h3>
-            <p className="text-segment">***************</p>
+            {isChangingPassword ? (
+              <Input
+                type="password"
+                name="password"
+                placeholder="Enter new password"
+                value={password}
+                onChange={(val) => setPassword(val)}
+              />
+            ) : (
+              <p className="text-segment">***************</p>
+            )}
             <p className="text-segment">Last changed 12/12/2025</p>
           </div>
           <div
             className="text-accent cursor-pointer transition-transform duration-200 active:scale-95"
-            onClick={() => console.log("Change password clicked")}
+            onClick={() => {
+              if (isChangingPassword) {
+                // TODO: call your update password API here
+                console.log("New password:", password);
+                setIsChangingPassword(false);
+                setPassword("");
+              } else {
+                setIsChangingPassword(true);
+              }
+            }}
           >
-            Change password
+            {isChangingPassword ? "Save password" : "Change password"}
           </div>
         </div>
       </SettingsSection>
