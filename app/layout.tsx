@@ -6,7 +6,6 @@ import ToastProvider from "./provider/toastProvider";
 const cambay = Cambay({
   subsets: ["latin"],
   weight: ["400", "700"],
-  variable: "--font-cambay",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${cambay.variable} h-full antialiased`}
+      className={`${cambay.className} h-full antialiased`}
       suppressHydrationWarning 
     >
       <body className="min-h-screen flex flex-col">

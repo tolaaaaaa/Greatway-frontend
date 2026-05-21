@@ -1,10 +1,5 @@
 @import "tailwindcss";
-@import "@heroui/styles"; 
-
-
-@theme {
-  --font-cambay: var(--font-cambay);
-}
+@import "@heroui/styles";
 
 :root {
   --background: #ffffff;
@@ -73,7 +68,7 @@
 [data-theme="dark"] {
   color-scheme: dark;
   /* Theme Colors (Dark Mode) */
-  --accent: oklch(62.04% 0.1950 145.09);
+ --accent: #06CD70;
   --accent-foreground: oklch(99.11% 0 0);
   --background: oklch(12.00% 0.0015 145.09);
   --border: oklch(28.00% 0.0015 145.09);
@@ -112,6 +107,11 @@
 
     .app-container {
     @apply px-4 md:px-17.5 max-w-7xl mx-auto;
+  }
+
+   button, [role="button"], input, select, textarea {
+    line-height: 1;
+    font-family: var(--font-cambay), sans-serif;
   }
 
 }

@@ -1,3 +1,5 @@
 export {default as Topbar} from "./Topbar"
 export {default as SideBar} from "./Sidebar"
 export {default as Pagination} from "./pagination"
+export {default as Header} from "./Header"
+export {default as Footer} from "./Footer"

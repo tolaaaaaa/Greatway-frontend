@@ -62,6 +62,45 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+// export async function middleware(request: NextRequest) {
+//   const { pathname } = request.nextUrl;
+
+//   // Only protect dashboard routes
+//   if (!pathname.startsWith('/dashboard')) {
+//     return NextResponse.next();
+//   }
+
+//   // Get session from cookies
+//   const session = await getSession();
+
+//   // Check if user is authenticated
+//   if (!session) {
+//     const loginUrl = new URL('/login', request.url);
+//     loginUrl.searchParams.set('redirect', pathname);
+//     return NextResponse.redirect(loginUrl);
+//   }
+
+//   // Check role-based permissions
+//   const userRole = session.role?.toLowerCase();
+
+//   const matchingRoute = Object.keys(routePermissions).find(route =>
+//     pathname === route || pathname.startsWith(`${route}/`)
+//   );
+
+//   if (matchingRoute) {
+//     const allowedRoles = routePermissions[matchingRoute];
+//     if (!allowedRoles.includes(userRole)) {
+//       return NextResponse.redirect(new URL('/unauthorized', request.url));
+//     }
+//   }
+
+//   if (!matchingRoute && !['admin', 'super_admin'].includes(userRole)) {
+//     return NextResponse.redirect(new URL('/unauthorized', request.url));
+//   }
+
+//   return NextResponse.next();
+// }
+
 export const config = {
   matcher: [
     /*

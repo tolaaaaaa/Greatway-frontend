@@ -26,12 +26,13 @@ const ITEMS_PER_PAGE = 9;
 
 type Props = {
   gallery: Pagination<Gallery>;
+  initialPage?: number;
 };
 
-export default function GalleryComponent({ gallery }: Props) {
+export default function GalleryComponent({ gallery, initialPage = 1 }: Props) {
   const router = useRouter();
   const [media, setMedia] = useState<MediaFile | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const topRef = useRef<HTMLElement>(null);
   const fileRef = useRef<File | null>(null);
   const [isTransitioning, startTransition] = useTransition();
@@ -79,10 +80,7 @@ export default function GalleryComponent({ gallery }: Props) {
     setDeleteSuccess(true);
   };
 
-  const paginatedImages = gallery.items.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
-  );
+  const paginatedImages = gallery.items;
 
   const scrollToTop = () =>
     topRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -90,6 +88,7 @@ export default function GalleryComponent({ gallery }: Props) {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > gallery.metadata.totalPages) return;
     setCurrentPage(page);
+    router.push(`?page=${page}`);
     scrollToTop();
   };
 
@@ -132,7 +131,7 @@ export default function GalleryComponent({ gallery }: Props) {
                   key={image.id}
                   gallery={image}
                   alt={`gallery image ${index + 1}`}
-                  handleDelete={(id) => setPendingDeleteId(id)} // ✅ just opens dialog
+                  handleDelete={(id) => setPendingDeleteId(id)}
                 />
               ))}
             </div>
