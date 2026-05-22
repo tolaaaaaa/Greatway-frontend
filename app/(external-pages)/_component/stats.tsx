@@ -4,11 +4,12 @@ type Props = {
     totalProperties: number;
     listedProperties: number;
     soldProperties: number;
+    use25?: boolean; 
 }
 
-export default function Stats({ totalProperties, listedProperties, soldProperties }: Props) {
+export default function Stats({ totalProperties, listedProperties, soldProperties, use25 }: Props) {
   return (
-    <section className="mt-60 relative w-full h-57 overflow-hidden">
+    <section className={`${use25 ? 'mt-25' : 'mt-60'} relative w-full h-57 overflow-hidden`}>
       {/* Background image with green overlay */}
       <div className="absolute inset-0">
         <Image

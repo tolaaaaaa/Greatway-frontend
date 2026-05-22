@@ -1,7 +1,7 @@
 import { Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
-import SearchFilter from "./searchFilter";
+import SearchFilter from "../../_component/searchFilter";
 
 export default function Hero() {
   return (

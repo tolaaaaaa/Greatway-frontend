@@ -1,13 +1,28 @@
 import { Button } from "@/app/component/ui";
 import { SlidersHorizontal } from "lucide-react";
 
-export default function SearchFilter() {
+type SearchFilterDisplay = "both" | "search" | "whatsapp";
+
+interface SearchFilterProps {
+  display?: SearchFilterDisplay;
+}
+
+export default function SearchFilter({ display = "both" }: SearchFilterProps) {
+  const showSearch = display !== "whatsapp";
+  const showWhatsapp = display !== "search";
+
   return (
     <div className="absolute bottom-0 left-0 right-0 translate-y-1/2 z-20">
       <div className="app-container w-full flex items-center justify-between">
         
         {/* Search Box */}
-        <div className="bg-[#070707] rounded-[15px] shadow-[2px_4px_53px_-15px_rgba(0,0,0,0.25)] flex items-center gap-9.5 px-8.75 py-7.5">
+        <div
+          className={
+            "bg-[#070707] rounded-[15px] shadow-[2px_4px_53px_-15px_rgba(0,0,0,0.25)] flex items-center gap-9.5 px-8.75 py-7.5 " +
+            (showSearch ? "" : " invisible")
+          }
+          aria-hidden={!showSearch}
+        >
           
           {/* Fields */}
           <div className="flex items-center justify-center gap-7.5">
@@ -72,7 +87,11 @@ export default function SearchFilter() {
           href="https://wa.me/yournumber"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform shrink-0"
+          className={
+            "bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform shrink-0 " +
+            (showWhatsapp ? "" : " invisible")
+          }
+          aria-hidden={!showWhatsapp}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

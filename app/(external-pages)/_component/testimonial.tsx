@@ -16,9 +16,10 @@ type Testimonial = {
 
 type Props = {
   testimonials: Testimonial[];
+  usePadding?: boolean
 };
 
-export default function Testimonial({ testimonials }: Props) {
+export default function Testimonial({ testimonials, usePadding = true }: Props) {
   const swiperRef = useRef<HTMLDivElement>(null);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
@@ -46,7 +47,7 @@ export default function Testimonial({ testimonials }: Props) {
 
   return (
     <section className="mt-25">
-      <div className="app-container py-17.5">
+      <div className={`app-container ${usePadding ? "py-17.5" : ""}`}>
         <div className="flex flex-col gap-4.75">
           {/* Header — centered */}
           <div className="flex flex-col items-center gap-0.75">

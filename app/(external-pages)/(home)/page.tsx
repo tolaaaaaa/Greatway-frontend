@@ -1,15 +1,15 @@
 import Hero from "./_component/hero";
 import WhyUs from "./_component/whyUs";
 import AboutUs from "./_component/aboutUs";
-import Stats from "./_component/stats";
 import { getProperties } from "@/actions/property.action";
 import PropertyProduct from "./_component/properties";
 import OurWork from "./_component/ourWork";
 import { getGalleries } from "@/actions/gallery.action";
-import Testimonial from "./_component/testimonial";
-import ContactUs from "./_component/contactUs";
+import Stats from "../_component/stats";
+import Testimonial from "../_component/testimonial";
+import ContactUs from "../_component/contactUs";
 
-const dummyTestimonials = [
+export const dummyTestimonials = [
   {
     id: 1,
     quote:
