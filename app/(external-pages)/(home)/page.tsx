@@ -8,6 +8,8 @@ import { getGalleries } from "@/actions/gallery.action";
 import Stats from "../_component/stats";
 import Testimonial from "../_component/testimonial";
 import ContactUs from "../_component/contactUs";
+import { Suspense } from "react";
+import PropertiesSkeleton from "../_component/propertiesSkeleton";
 
 export const dummyTestimonials = [
   {
@@ -53,10 +55,13 @@ export const dummyTestimonials = [
 ];
 
 export default async function Home() {
-  const gallery = await getGalleries({ limit: 6 } as PaginationParams);
-  const listedProperties = await getProperties({ status: "listed", limit: 4 });
-  const unlistedProperties = await getProperties({ status: "unlisted" });
-  const soldProperties = await getProperties({ status: "sold" });
+  const [gallery, listedProperties, unlistedProperties, soldProperties] =
+    await Promise.all([
+      getGalleries({ limit: 6 } as PaginationParams),
+      getProperties({ status: "listed", limit: 4 }),
+      getProperties({ status: "unlisted" }),
+      getProperties({ status: "sold" }),
+    ]);
   const totalListedUnlistedProperties =
     listedProperties.metadata.total + unlistedProperties.metadata.total;
 
@@ -70,7 +75,9 @@ export default async function Home() {
         totalProperties={totalListedUnlistedProperties ?? 0}
         listedProperties={listedProperties.metadata.total ?? 0}
       />
-      <PropertyProduct property={listedProperties.items} />
+      <Suspense fallback={<PropertiesSkeleton />}>
+        <PropertyProduct property={listedProperties.items} />
+      </Suspense>
       <OurWork gallery={gallery.items} />
       <Testimonial testimonials={dummyTestimonials} />
       <ContactUs />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PropertyFeature } from "@/types/property";
 import { Bed, Bath, Car, Trees, Maximize, Sofa, Warehouse } from "lucide-react";
 import { formatPrice } from "@/utils/formating";
+import { getFeatureDescription } from "@/utils/helper";
 
 export type PropertyCardProps = {
   id: string;
@@ -106,7 +107,7 @@ export default function PropertyCard({
             className="flex items-center gap-2 font-bold text-sm text-muted"
           >
             {getFeatureIcon(feature.icon)}
-            <span>{feature.description}</span>
+            <span>{getFeatureDescription(feature.description, feature.icon)}</span>
           </div>
         ))}
       </div>

@@ -15,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Property } from "@/types/property";
-import { getFeatureIcon } from "@/utils/helper";
+import { getFeatureDescription, getFeatureIcon } from "@/utils/helper";
 import { useState } from "react";
 import {
   deleteProperty,
@@ -136,7 +136,7 @@ export default function PropertiesDetails({
                   <div key={index} className="flex gap-2 items-center">
                     {getFeatureIcon(feature.icon)}
                     <span className="text-muted font-normal">
-                      {feature.description}
+                      {getFeatureDescription(feature.description, feature.icon)}
                     </span>
                   </div>
                 ))}

@@ -35,7 +35,6 @@ type PropertyFilters = {
 
 type GetPropertiesParams = PaginationParams<PropertyFilters>;
 
-
 export async function getProperties(
   options: GetPropertiesParams = {},
 ): Promise<Pagination<Property>> {
@@ -253,6 +252,9 @@ export async function updateProperty(
       requestBody[`features[${index}][description]`] = feature.description;
       if (feature.icon) {
         requestBody[`features[${index}][icon]`] = feature.icon;
+      }
+      if (feature.id) {
+        requestBody[`features[${index}][id]`] = feature.id;
       }
     });
   }

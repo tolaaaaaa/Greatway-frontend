@@ -1,8 +1,8 @@
 import { Button } from "@/app/component/ui";
 import { Property } from "@/types/property";
 import { formatPrice } from "@/utils/formating";
-import { getFeatureIcon } from "@/utils/helper";
-import { LocationEdit, MapIcon } from "lucide-react";
+import { getFeatureDescription, getFeatureIcon } from "@/utils/helper";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ type props = {
 
 export default function PropertyCard({ property }: props) {
   return (
-    <div className="bg-black rounded-[30px] h-87.5 w-175">
+    <div className="bg-black rounded-[30px] h-87.5 ">
       <div className="flex p-6 gap-7 h-full">
         <div className="h-full w-[45%]">
           <Image
@@ -27,7 +27,7 @@ export default function PropertyCard({ property }: props) {
           <div className="">
             <h1 className="font-bold text-[20px]">{property.title}</h1>
             <h3 className="inline-flex gap-2 font-bold justify-center text-[14px]">
-                <span><LocationEdit className="w-3 h-4" /></span>
+                <span><MapPin className="w-3 h-4" /></span>
                 {property.location}
                 </h3>
           </div>
@@ -39,7 +39,7 @@ export default function PropertyCard({ property }: props) {
                 className="flex items-center gap-2 font-bold text-sm text-[#DFDFDF]"
               >
                 {getFeatureIcon(feature.icon)}
-                <span>{feature.description}</span>
+                <span>{getFeatureDescription(feature.description, feature.icon)}</span>
               </div>
             ))}
           </div>
