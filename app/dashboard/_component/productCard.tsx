@@ -86,12 +86,12 @@ export default function PropertyCard({
 
       {/* Title */}
       <h4 className="font-bold text-[20px] text-foreground leading-snug">
-        {title}
+        {title.slice(0, 50)}{title.length > 50 ? "..." : ""}
       </h4>
 
       {/* Location */}
       <p className="inline-flex gap-2 items-center text-muted font-bold text-base">
-        <MapPin size={16} /> {location}
+        <MapPin size={16} /> {location.slice(0, 20)}{location.length > 20 ? "..." : ""}
       </p>
 
       {/* Price */}

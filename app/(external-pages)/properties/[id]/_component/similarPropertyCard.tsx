@@ -34,12 +34,12 @@ export default function SimilarPropertyCard({ property }: { property: Property }
 
             {/* Location */}
             <div className="flex items-center gap-1.5">
-              <MapPin size={8} className="text-[#8D8D8D] shrink-0" />
+              <MapPin className="text-[#8D8D8D] shrink-0 w-4 h-4" />
               <span
                 className="text-[#8D8D8D] font-bold text-[14px] leading-7.5 wrap-break-word"
                 style={{ fontFamily: "Cambay, sans-serif" }}
               >
-                {property.location}
+                {property.location.slice(0, 15)}{property.location.length > 15 ? "..." : ""}
               </span>
             </div>
           </div>

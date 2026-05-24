@@ -28,7 +28,7 @@ export default function PropertyCard({ property }: props) {
             <h1 className="font-bold text-[20px]">{property.title}</h1>
             <h3 className="inline-flex gap-2 font-bold justify-center text-[14px]">
                 <span><MapPin className="w-3 h-4" /></span>
-                {property.location}
+                {property.location.slice(0, 20)}{property.location.length > 20 ? "..." : ""}
                 </h3>
           </div>
           <h1 className="text-accent font-bold text-[29px]">{formatPrice(property.salesPrice)}</h1>
