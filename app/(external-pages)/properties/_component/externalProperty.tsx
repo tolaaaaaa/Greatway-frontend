@@ -20,6 +20,8 @@ export default function ExternalPropertyPage({ properties }: Props) {
   const { items, metadata } = properties;
   const { page, totalPages } = metadata;
 
+  const currentPage = Number(page)
+
   const scrollToTop = () =>
     topRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -59,7 +61,7 @@ export default function ExternalPropertyPage({ properties }: Props) {
             <div className="flex flex-col items-center gap-10 pb-6">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handlePageChange(page - 1)}
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={!metadata.hasPreviousPage}
                   className="w-7.25 h-7.25 flex items-center justify-center disabled:opacity-30 transition-opacity"
                 >
@@ -76,7 +78,7 @@ export default function ExternalPropertyPage({ properties }: Props) {
                     className={`
                       w-8.25 h-8.25 rounded-[3.77px] flex items-center justify-center
                       font-medium text-[22px] leading-6.75 text-white transition-colors duration-200
-                      ${page === p ? "bg-[#06CD70]" : "hover:bg-white/10"}
+                      ${currentPage === p ? "bg-[#06CD70]" : "hover:bg-white/10"}
                     `}
                   >
                     {p}
@@ -84,7 +86,7 @@ export default function ExternalPropertyPage({ properties }: Props) {
                 ))}
 
                 <button
-                  onClick={() => handlePageChange(page + 1)}
+                  onClick={() => handlePageChange(currentPage + 1)}
                   disabled={!metadata.hasNextPage}
                   className="w-7.25 h-7.25 flex items-center justify-center disabled:opacity-30 transition-opacity"
                 >

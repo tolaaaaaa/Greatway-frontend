@@ -10,7 +10,7 @@ type Props = {
 };
 
 async function Properties({ page }: { page: number }) {
-  const properties = await getProperties({ status: "listed", limit: 20, page });
+  const properties = await getProperties({ status: "listed", limit: 13, page });
   return <ExternalPropertyPage properties={properties} />;
 }
 

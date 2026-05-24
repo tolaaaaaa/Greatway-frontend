@@ -22,7 +22,7 @@ import { Pagination } from "@/app/component/layout";
 import { deleteGallery, uploadGallery } from "@/actions/gallery.action";
 import { useRouter } from "next/navigation";
 
-const ITEMS_PER_PAGE = 9;
+
 
 type Props = {
   gallery: Pagination<Gallery>;
@@ -128,7 +128,6 @@ export default function GalleryComponent({ gallery, initialPage = 1 }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {paginatedImages.map((image, index) => (
                 <GalleryImages
-                  key={image.id}
                   gallery={image}
                   alt={`gallery image ${index + 1}`}
                   handleDelete={(id) => setPendingDeleteId(id)}
@@ -160,14 +159,16 @@ export default function GalleryComponent({ gallery, initialPage = 1 }: Props) {
           </div>
         )}
 
-        {gallery.items.length > 0 && <div className="flex justify-center items-center">
-          <button
-            onClick={scrollToTop}
-            className="font-bold text-[18px] underline text-white hover:text-white/70 transition-colors cursor-pointer"
-          >
-            Back To Top
-          </button>
-        </div>}
+        {gallery.items.length > 0 && (
+          <div className="flex justify-center items-center">
+            <button
+              onClick={scrollToTop}
+              className="font-bold text-[18px] underline text-white hover:text-white/70 transition-colors cursor-pointer"
+            >
+              Back To Top
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Confirm Delete */}
