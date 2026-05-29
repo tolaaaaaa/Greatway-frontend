@@ -21,7 +21,11 @@ export default function AdminPage({ user }: Props) {
   const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   const handleDeactivate = async (id: string, status: UserStatus) => {
-    await updateStatus(id, status)
+    const error = await updateStatus(id, status);
+
+    if (error) {
+      customToast.error(error);
+    }
   };
 
   const handleDelete = async () => {
@@ -38,7 +42,6 @@ export default function AdminPage({ user }: Props) {
 
     setDeleteSuccess(true);
   };
-
 
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());

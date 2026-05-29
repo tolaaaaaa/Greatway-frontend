@@ -46,7 +46,7 @@ export default function Header() {
                 </div>
 
                 <div>
-                    <Link href={"/book-now"}>
+                    <Link href={"/book"}>
                         <Button variant="primary" className="text-[16px] inline-flex justify-center items-center py-2 px-4">
                             Book Now
                         </Button>

@@ -90,7 +90,7 @@
   --separator: oklch(25.00% 0.0015 145.09);
   --success: oklch(73.29% 0.1941 137.76);
   --success-foreground: oklch(21.03% 0.0059 137.76);
-  --surface: oklch(21.03% 0.0030 145.09);
+  --surface: #181818;
   --surface-foreground: oklch(99.11% 0.0015 145.09);
   --surface-secondary: oklch(25.70% 0.0023 145.09);
   --surface-secondary-foreground: oklch(99.11% 0.0015 145.09);

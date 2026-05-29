@@ -1,5 +1,6 @@
 "use client";
 
+import NotificationBell from "@/app/dashboard/notification/notifcation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Bell, Menu } from "lucide-react";
 import Image from "next/image";
@@ -71,7 +72,7 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
             className="relative w-8 h-8 sm:w-8.25 sm:h-8.25 flex items-center justify-center bg-surface-secondary rounded-[3.67px] hover:bg-surface-tertiary transition-colors"
             aria-label="Notifications"
           >
-            <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-accent" strokeWidth={1.48} />
+            <NotificationBell />
             <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full sm:hidden" />
           </button>
 

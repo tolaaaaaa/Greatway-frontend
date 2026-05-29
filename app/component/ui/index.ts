@@ -16,3 +16,4 @@ export { Skeleton } from "./Skeleton";
 export {Badge} from "./Bagde"
 export {Spinner} from "./Spinner"
 export {ConfirmDialog as Dialog} from "./Dialog"
+export {FieldIcon, FieldInput, FieldWrapper} from "./FieldInput"

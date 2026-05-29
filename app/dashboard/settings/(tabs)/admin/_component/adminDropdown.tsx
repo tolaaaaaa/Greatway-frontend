@@ -21,12 +21,6 @@ export function AdminActionsDropdown({
 }: AdminActionsDropdownProps) {
   const items: DropdownItem[] = [
     {
-      key: 'edit',
-      label: 'Edit',
-      icon: <Pencil size={14} />,
-      onClick: () => onEdit?.(id),
-    },
-    {
       key: 'deactivate',
       label: currentStatus === 'active' ? 'Deactivate' : 'Activate',
       icon: <Ban size={14} />,

@@ -111,14 +111,14 @@ export async function updateUser(
   redirect("/dashboard/settings/admin", RedirectType.replace);
 }
 
-export async function updateStatus(id: string, status: UserStatus): Promise<boolean> {
-  const response = await ServerApiClient.patch<User>(`/users/${id}`, {
+export async function updateStatus(id: string, status: UserStatus): Promise<string> {
+  const response = await ServerApiClient.patch<User>(`/users/${id}/status`, {
     status: status,
   });
 
   if (response.code >= 400) {
     console.log("Updating status: ", response);
-    return false;
+    return response.message;
   }
 
  redirect("/dashboard/settings/admin", RedirectType.replace)

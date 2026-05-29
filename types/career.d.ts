@@ -6,8 +6,12 @@ type Career = {
   location: string;
   status: CareerStatus;
   companyName: string;
+  salary?: number;
   createdAt: Date;
   updatedAt: Date;
+  responsibilities?: [];
+  skills?: [];
+  benefits?: [];
 };
 
 type EmploymentType = "full-time" | "contract" | "part-time" | "internship";

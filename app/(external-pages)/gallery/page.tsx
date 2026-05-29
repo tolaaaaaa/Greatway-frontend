@@ -3,6 +3,7 @@ import ExternalGallery from "./_component/externalGallery";
 import ExternalGallerySkeleton from "./_component/externalGallerySkeleton";
 import HeroGallery from "./_component/heroGallery";
 import { Suspense } from "react";
+import ContactUs from "../_component/contactUs";
 
 type Props = {
   searchParams: Promise<{ page?: string }>;
@@ -22,6 +23,7 @@ export default async function page({ searchParams }: Props) {
       <Suspense fallback={<ExternalGallerySkeleton />}>
         <ExternalGallery gallery={galleries} />
       </Suspense>
+      <ContactUs />
     </>
   );
 }
