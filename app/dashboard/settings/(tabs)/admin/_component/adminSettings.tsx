@@ -35,8 +35,8 @@ export default function AdminPage({ user }: Props) {
     setIsDeleting(false);
     setPendingDeleteId(null);
 
-    if (!result) {
-      customToast.error("Failed to delete user. Please try again.");
+    if (!result.success) {
+      customToast.error(result.message ? result.message : "Failed to delete user. Please try again.");
       return;
     }
 

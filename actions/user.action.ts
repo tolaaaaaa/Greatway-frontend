@@ -137,13 +137,13 @@ export async function updatePassword(password: string): Promise<boolean> {
   return true;
 }
 
-export async function deleteUser(id: string): Promise<boolean> {
+export async function deleteUser(id: string): Promise<{message: string, success: boolean}> {
   const response = await ServerApiClient.delete<User>(`/users/${id}`);
 
   if (response.code >= 400) {
     console.log("Error deleting user: ", response);
-    return false;
+    return {message: response.message, success: false};
   }
 
-  return true;
+  return {message: response.message, success: true};
 }
