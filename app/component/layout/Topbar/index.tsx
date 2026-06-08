@@ -2,8 +2,9 @@
 
 import NotificationBell from "@/app/dashboard/notification/notifcation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface TopbarProps {
@@ -14,26 +15,33 @@ interface TopbarProps {
     fullName: string;
     role: UserRole;
     email: string;
-    avatarUrl?: string; // Make avatarUrl optional
+    avatarUrl?: string;
   };
 }
 
 export default function Topbar({ onMenuClick, showMenuButton = true, user }: TopbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
-  // Get user initials from full name (first two names capitalized)
   const getUserInitials = () => {
     const names = user.fullName.trim().split(/\s+/);
-    const initials = names.slice(0, 2).map(name => name[0]).join("");
+    const initials = names.slice(0, 2).map((name) => name[0]).join("");
     return initials.toUpperCase();
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/dashboard/properties/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+    }
   };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-surface border-b border-border font-cambay">
       <div className="flex items-center justify-between h-12 sm:h-16 lg:h-20 px-4 sm:px-6 lg:px-11.25">
-        {/* Left Section - Menu Button & Search */}
+        {/* Left Section */}
         <div className="flex items-center gap-3 sm:gap-4 flex-1">
-          {/* Mobile Menu Button */}
           {showMenuButton && (
             <button
               onClick={onMenuClick}
@@ -50,6 +58,9 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
               type="search"
               name="search"
               placeholder="Search Here"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               className="w-full h-8.75 sm:h-10 lg:h-8.75 pl-4 pr-10 bg-field-background border border-border rounded-[19px] text-foreground text-sm sm:text-base placeholder:text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft-hover transition-all"
             />
             <MagnifyingGlassIcon className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
@@ -67,8 +78,7 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
 
         {/* Right Section */}
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-10">
-          {/* Notification Icon */}
-          <button 
+          <button
             className="relative w-8 h-8 sm:w-8.25 sm:h-8.25 flex items-center justify-center bg-surface-secondary rounded-[3.67px] hover:bg-surface-tertiary transition-colors"
             aria-label="Notifications"
           >
@@ -76,12 +86,9 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
             <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full sm:hidden" />
           </button>
 
-          {/* Divider - Hidden on mobile */}
           <div className="hidden sm:block w-px h-6 sm:h-8 lg:h-[48.5px] bg-border" />
 
-          {/* User Profile Section */}
           <div className="flex items-center gap-2 sm:gap-3 lg:gap-2.75">
-            {/* User Info - Hidden on mobile */}
             <div className="hidden sm:block text-right">
               <h2 className="text-sm lg:text-xl font-bold text-foreground leading-tight lg:leading-7.5 tracking-[0.01em]">
                 {user.fullName}
@@ -91,7 +98,6 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
               </p>
             </div>
 
-            {/* Profile Avatar / Badge */}
             <button className="relative w-8 h-8 sm:w-10 sm:h-10 lg:w-14.5 lg:h-13.75 rounded-full sm:rounded-[5px] overflow-hidden bg-surface-tertiary ring-2 ring-border hover:ring-accent transition-all">
               {user.avatarUrl ? (
                 <Image
@@ -110,7 +116,7 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
         </div>
       </div>
 
-      {/* Mobile Search Bar - Expandable */}
+      {/* Mobile Search - Expandable */}
       {isSearchOpen && (
         <div className="md:hidden px-4 pb-3 bg-surface border-t border-border">
           <div className="relative w-full">
@@ -118,6 +124,9 @@ export default function Topbar({ onMenuClick, showMenuButton = true, user }: Top
               type="search"
               name="search"
               placeholder="Search Here"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               className="w-full h-10 pl-4 pr-10 bg-field-background border border-border rounded-[19px] text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft-hover transition-all"
               autoFocus
             />

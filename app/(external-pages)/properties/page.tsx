@@ -6,25 +6,53 @@ import { Suspense } from "react";
 import PropertiesSkeleton from "../_component/propertiesSkeleton";
 
 type Props = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; location?: string; price?: string, type?: string }>;
 };
 
-async function Properties({ page }: { page: number }) {
-  const properties = await getProperties({ status: "listed", limit: 13, page });
+async function Properties({
+  page,
+  location,
+  minPrice,
+  maxPrice,
+  type,
+}: {
+  page: number;
+  location?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  type?: string;
+}) {
+  const properties = await getProperties({
+    status: "listed",
+    limit: 13,
+    page,
+    location,
+    minPrice,
+    maxPrice,
+    search: type,
+  });
   return <ExternalPropertyPage properties={properties} />;
 }
 
-
-
 export default async function Page({ searchParams }: Props) {
-  const { page } = await searchParams;
+  const { page, location, price, type } = await searchParams;
   const currentPage = Number(page) || 1;
+
+  const [minPrice, maxPrice] = (price ?? "")
+    .split("-")
+    .map((v) => Number(v.replace(/[^0-9]/g, "").trim()) || undefined);
 
   return (
     <>
       <HeroProperty />
-      <Suspense key={currentPage} fallback={<PropertiesSkeleton />}>
-        <Properties page={currentPage} />
+      <Suspense key={`${currentPage}-${location}-${price}-${type}`} fallback={<PropertiesSkeleton />}>
+        <Properties
+          page={currentPage}
+          location={location}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          type={type}
+        />
       </Suspense>
       <ContactUs />
     </>

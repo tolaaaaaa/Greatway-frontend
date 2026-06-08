@@ -1,5 +1,8 @@
+"use client";
 import { Button } from "@/app/component/ui";
 import { SlidersHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type SearchFilterDisplay = "both" | "search" | "whatsapp";
 
@@ -10,11 +13,24 @@ interface SearchFilterProps {
 export default function SearchFilter({ display = "both" }: SearchFilterProps) {
   const showSearch = display !== "whatsapp";
   const showWhatsapp = display !== "search";
+  const router = useRouter();
+
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [averagePrice, setAveragePrice] = useState("");
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (location.trim()) params.set("location", location.trim());
+    if (propertyType.trim()) params.set("type", propertyType.trim());
+    if (averagePrice.trim()) params.set("price", averagePrice.trim());
+
+    router.push(`/properties?${params.toString()}`);
+  };
 
   return (
     <div className="absolute bottom-0 left-0 right-0 translate-y-1/2 z-20">
       <div className="app-container w-full flex items-center justify-between">
-        
         {/* Search Box */}
         <div
           className={
@@ -23,10 +39,8 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
           }
           aria-hidden={!showSearch}
         >
-          
           {/* Fields */}
           <div className="flex items-center justify-center gap-7.5">
-
             {/* Location */}
             <div className="flex flex-col gap-1.75 w-46.25">
               <label className="font-bold text-[17px] leading-8.25 text-[#FCEEE2] tracking-[0.02em] ">
@@ -36,6 +50,9 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
                 <input
                   type="text"
                   placeholder="Palmgroove, Lagos"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="bg-transparent outline-none font-cambay font-bold text-[15px] leading-6.5 tracking-[0.02em] text-black w-full"
                 />
               </div>
@@ -52,6 +69,9 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
                 <input
                   type="text"
                   placeholder="Deluxe"
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="bg-transparent outline-none font-cambay font-bold text-[15px] leading-6.5 tracking-[0.02em] text-black w-full"
                 />
               </div>
@@ -67,7 +87,10 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
               <div className="bg-[#DDE6E9] rounded-[10px] px-3.5 py-1.5 h-8.75 flex items-center">
                 <input
                   type="text"
-                  placeholder="₦5000-10000"
+                  placeholder="₦5000-₦10000"
+                  value={averagePrice}
+                  onChange={(e) => setAveragePrice(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   className="bg-transparent outline-none font-cambay font-bold text-[15px] leading-6.5 tracking-[0.02em] text-black w-full"
                 />
               </div>
@@ -77,7 +100,11 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
           </div>
 
           {/* Search Button */}
-          <Button variant="primary" className="py-8 px-10 text-[17px]">
+          <Button
+            variant="primary"
+            className="py-8 px-10 text-[17px]"
+            onClick={handleSearch}
+          >
             Search Now
           </Button>
         </div>
@@ -103,7 +130,6 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.057 23.997l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.36-.214-3.733.979.997-3.648-.235-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z" />
           </svg>
         </a>
-
       </div>
     </div>
   );
