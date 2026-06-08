@@ -3,11 +3,29 @@ import EmailInput from "./settingEmailInput";
 import SettingsSection from "./settingsSection";
 import SwitchItem from "./settingSwitch";
 import { useState } from "react";
-import { Input } from "@/app/component/ui";
+import { customToast, Input } from "@/app/component/ui";
+import { updatePassword } from "@/actions/user.action";
 
 export default function GeneralSettings() {
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
+const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handlePasswordSave = async () => {
+    if (!password.trim()) return;
+
+    setIsSaving(true);
+    const success = await updatePassword(password);
+    setIsSaving(false);
+
+    if (success) {
+      customToast.success("Password updated successfully");
+      setIsChangingPassword(false);
+      setPassword("");
+    } else {
+      customToast.error("Failed to update password. Please try again.");
+    }
+  };
 
   const notificationItems = [
     "New Booking",
@@ -79,16 +97,13 @@ export default function GeneralSettings() {
             className="text-accent cursor-pointer transition-transform duration-200 active:scale-95"
             onClick={() => {
               if (isChangingPassword) {
-                // TODO: call your update password API here
-                console.log("New password:", password);
-                setIsChangingPassword(false);
-                setPassword("");
+                handlePasswordSave();
               } else {
                 setIsChangingPassword(true);
               }
             }}
           >
-            {isChangingPassword ? "Save password" : "Change password"}
+             {isSaving ? "Saving..." : isChangingPassword ? "Save password" : "Change password"}
           </div>
         </div>
       </SettingsSection>

@@ -1,5 +1,8 @@
+import { getAuthUser } from "@/actions/auth.actions";
 import GeneralSettings from "./_component/generalSettings";
 
-export default function GeneralPage() {
+export default async function GeneralPage() {
+  const user = await getAuthUser();
+  if (!user) return null;
   return <GeneralSettings />;
 }
