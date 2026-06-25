@@ -54,21 +54,20 @@
   --radius: 0.5rem;
   --field-radius: 0.75rem;
 
-   --field-border: transparent;
+  --field-border: transparent;
   --field-border-width: 0px;
   --field-shadow: 0 0 0 0 transparent inset;
 
   /* Font Family */
   /* Make sure to load Inter font in your app */
   --font-sans: var(--font-inter);
-  --font-cambay: var(--font-cambay)
 }
 
 .dark,
 [data-theme="dark"] {
   color-scheme: dark;
   /* Theme Colors (Dark Mode) */
- --accent: #06CD70;
+  --accent: #06CD70;
   --accent-foreground: oklch(99.11% 0 0);
   --background: oklch(12.00% 0.0015 145.09);
   --border: oklch(28.00% 0.0015 145.09);
@@ -101,17 +100,31 @@
 }
 
 @layer components {
-   .dashboard-container {
+
+   /* * {
+    font-family: sans-serif;
+  } */
+
+  /* body {
+    font-family: sans-serif;
+    -webkit-font-smoothing: antialiased;
+  } */
+
+  .dashboard-container {
     @apply px-6 sm:px-10 lg:px-12.5;
   }
 
-    .app-container {
+  .app-container {
     @apply px-4 md:px-17.5 max-w-7xl mx-auto;
   }
 
-   button, [role="button"], input, select, textarea {
+  button,
+  [role="button"] {
     line-height: 1;
     font-family: var(--font-cambay), sans-serif;
+    font-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+    vertical-align: middle;
   }
 
 }

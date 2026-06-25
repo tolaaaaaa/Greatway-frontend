@@ -21,7 +21,7 @@ function timeAgo(dateStr: string): string {
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [notifications, setNotifications] = useState<NotificationData[] | null>(null);
   const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +51,7 @@ export default function NotificationBell() {
   const handleMarkAsRead = (id: string) => {
     startTransition(async () => {
       await markNotificationAsRead(id);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
+      setNotifications((prev) => prev ? prev.filter((n) => n.id !== id) : []);
     });
   };
 
@@ -62,27 +62,27 @@ export default function NotificationBell() {
     });
   };
 
-  const unreadCount = notifications.length;
+  const isLoading = notifications === null;
+  const unreadCount = notifications?.length ?? 0;
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Bell — matches your existing button style exactly */}
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="relative w-8 h-8 sm:w-8.25 sm:h-8.25 cursor-pointer flex items-center justify-center bg-surface-secondary rounded-[3.67px] hover:bg-surface-tertiary transition-colors"
         aria-label="Notifications"
       >
         <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-accent" strokeWidth={1.48} />
-        {unreadCount > 0 ? (
-          <span className="absolute -top-1 -right-1 min-w-4 h-4 flex items-center justify-center rounded-full bg-danger text-white text-[9px] font-bold px-1 leading-none">
-            {unreadCount > 99 ? "99+" : unreadCount}
-          </span>
-        ) : (
-          <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full sm:hidden" />
-        )}
+        {/* always rendered — invisible until resolved to prevent layout shift */}
+        <span
+          className={`absolute -top-1 -right-1 min-w-4 h-4 flex items-center justify-center rounded-full bg-danger text-white text-[9px] font-bold px-1 leading-none transition-opacity ${
+            !isLoading && unreadCount > 0 ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div className="absolute right-0 mt-2 w-85 sm:w-95 rounded-2xl border border-border bg-surface shadow-xl z-50 overflow-hidden">
           {/* Header */}
@@ -91,14 +91,14 @@ export default function NotificationBell() {
               <h3 className="text-sm font-semibold text-foreground font-cambay">
                 Notifications
               </h3>
-              {unreadCount > 0 && (
+              {!isLoading && unreadCount > 0 && (
                 <span className="px-2 py-0.5 rounded-full bg-accent-soft text-accent text-xs font-semibold">
                   {unreadCount} new
                 </span>
               )}
             </div>
             <div className="flex items-center gap-1">
-              {unreadCount > 0 && (
+              {!isLoading && unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
                   disabled={isPending}
@@ -119,7 +119,7 @@ export default function NotificationBell() {
 
           {/* List */}
           <div className="max-h-95 overflow-y-auto">
-            {isPending && notifications.length === 0 ? (
+            {isLoading || (isPending && unreadCount === 0) ? (
               <div className="flex flex-col gap-3 p-4">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="flex gap-3 animate-pulse">
@@ -131,7 +131,7 @@ export default function NotificationBell() {
                   </div>
                 ))}
               </div>
-            ) : notifications.length === 0 ? (
+            ) : unreadCount === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <div className="w-12 h-12 rounded-[3.67px] bg-surface-secondary flex items-center justify-center mb-3">
                   <Bell size={20} className="text-muted" strokeWidth={1.48} />
@@ -143,7 +143,7 @@ export default function NotificationBell() {
               </div>
             ) : (
               <ul className="divide-y divide-border">
-                {notifications.map((notification) => (
+                {notifications!.map((notification) => (
                   <NotificationItem
                     key={notification.id}
                     notification={notification}

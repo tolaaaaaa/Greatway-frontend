@@ -79,14 +79,22 @@ export default function CareerCard({ career }: Props) {
               <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
                 About the Role
               </h4>
-              <p className="text-[#C8C8C8] font-normal text-[16px] leading-6">
-                {career.description}
-              </p>
+              <div
+                dangerouslySetInnerHTML={{ __html: career.description }}
+                className="text-[#C8C8C8] font-normal text-[16px] leading-6 
+      [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-4 [&_h2]:mb-2
+      [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-3 [&_h3]:mb-1
+      [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mt-1
+      [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mt-1
+      [&_li]:mb-1
+      [&_p]:mb-2
+      [&_strong]:text-white [&_strong]:font-bold
+      [&_em]:italic"
+              />
             </div>
 
             {/* Responsibilities + Skills side by side */}
-            <div className="flex flex-row gap-22.5">
-              {/* Responsibilities */}
+            {/* <div className="flex flex-row gap-22.5">
               <div className="flex flex-col gap-2 flex-1">
                 <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
                   Responsibilities
@@ -104,7 +112,6 @@ export default function CareerCard({ career }: Props) {
                 </ul>
               </div>
 
-              {/* Skills & Qualifications */}
               <div className="flex flex-col gap-2 w-111.5 shrink-0">
                 <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
                   Skills & Qualifications
@@ -121,10 +128,10 @@ export default function CareerCard({ career }: Props) {
                   ))}
                 </ul>
               </div>
-            </div>
+            </div>  */}
 
             {/* Benefits */}
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
                 Benefits
               </h4>
@@ -139,7 +146,7 @@ export default function CareerCard({ career }: Props) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

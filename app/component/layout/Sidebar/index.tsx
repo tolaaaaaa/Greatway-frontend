@@ -112,7 +112,7 @@ export default function SideBar({
                     flex items-center gap-3 px-6 lg:px-20.5 py-3
                     transition-all duration-200
                     ${isActive
-                      ? "bg-surface-secondary text-accent font-bold"
+                      ? "text-accent font-bold bg-background"
                       : "text-muted hover:bg-surface-secondary hover:text-accent"
                     }
                   `}

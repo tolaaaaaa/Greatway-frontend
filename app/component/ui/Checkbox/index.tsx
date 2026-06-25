@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode } from 'react'
-import { Checkbox as HeroCheckbox, Label, Description } from '@heroui/react'
+import { Check, Minus } from 'lucide-react'
 
 type CheckboxProps = {
   id?: string
@@ -17,7 +17,7 @@ type CheckboxProps = {
   isReadOnly?: boolean
   value?: string
   className?: string
-  checkboxClassName?: string  // New prop for checkbox control styling
+  checkboxClassName?: string
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -35,10 +35,10 @@ export default function Checkbox({
   isReadOnly = false,
   value,
   className = '',
-  checkboxClassName = '',  // New prop with default empty string
+  checkboxClassName = '',
   size = 'md'
 }: CheckboxProps) {
-  const checkboxId = id || `checkbox-${name}-${React.useId()}`
+  const checkboxId = id || `checkbox-${name}`
 
   const sizeClasses = {
     sm: 'w-3.5 h-3.5',
@@ -46,79 +46,114 @@ export default function Checkbox({
     lg: 'w-5 h-5'
   }
 
-  const labelClasses = {
+  const labelSizeClasses = {
     sm: 'text-xs',
     md: 'text-sm',
     lg: 'text-base'
   }
 
-  return (
-    <div className={`flex flex-col justify-center gap-1.5 ${className}`}>
-      <HeroCheckbox
-        id={checkboxId}
-        name={name}
-        value={value}
-        isSelected={isSelected}
-        defaultSelected={defaultSelected}
-        onChange={onChange}
-        isDisabled={isDisabled}
-        isInvalid={isInvalid}
-        isIndeterminate={isIndeterminate}
-        isReadOnly={isReadOnly}
-        className="gap-2"
+  const [internalChecked, setInternalChecked] = React.useState(defaultSelected)
+  const checked = isSelected !== undefined ? isSelected : internalChecked
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isReadOnly || isDisabled) return
+    const next = e.target.checked
+    setInternalChecked(next)
+    onChange?.(next)
+  }
+
+  // no label and no description — render just the checkbox with no wrapper overhead
+  if (!label && !description) {
+    return (
+      <label
+        htmlFor={checkboxId}
+        className={`inline-flex items-center justify-center cursor-pointer ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
       >
-        <HeroCheckbox.Control 
+        <input
+          type="checkbox"
+          id={checkboxId}
+          name={name}
+          value={value}
+          checked={checked}
+          onChange={handleChange}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          className="sr-only"
+        />
+        <span
           className={`
-            ${sizeClasses[size]} 
-            shrink-0 
-            border-2 
-            border-muted 
-            rounded-sm 
-            data-[invalid=true]:border-(--danger) 
-            data-[disabled=true]:opacity-50 
-            data-[disabled=true]:cursor-not-allowed 
-            transition-all 
-            duration-200
+            shrink-0 inline-flex items-center justify-center
+            border-2 transition-all duration-200
+            ${sizeClasses[size]}
+            ${isInvalid ? 'border-danger' : checked ? 'border-accent bg-accent' : 'border-muted bg-transparent'}
             ${checkboxClassName}
           `}
         >
-          <HeroCheckbox.Indicator
-            className={`
-              data-[indeterminate=true]:bg-foreground
-              data-[indeterminate=true]:rounded-sm
-              data-[indeterminate=true]:before:block
-            `}
-          />
-        </HeroCheckbox.Control>
-        
-        {label && (
-          <HeroCheckbox.Content className="flex-1">
-            <Label
-              htmlFor={checkboxId}
-              className={`
-                text-muted font-medium cursor-pointer
-                transition-colors duration-200
-                data-[disabled=true]:opacity-50 data-[disabled=true]:cursor-not-allowed
-                ${labelClasses[size]}
-                ${isInvalid ? 'text-(--danger)' : ''}
-              `}
-            >
-              {label}
-            </Label>
-          </HeroCheckbox.Content>
-        )}
-      </HeroCheckbox>
+          {isIndeterminate ? (
+            <Minus className="w-full h-full text-white p-px" strokeWidth={3} />
+          ) : checked ? (
+            <Check className="w-full h-full text-white p-px" strokeWidth={3} />
+          ) : null}
+        </span>
+      </label>
+    )
+  }
+
+  return (
+    <div className={`inline-flex flex-col gap-1.5 ${className}`}>
+      <label
+        htmlFor={checkboxId}
+        className={`inline-flex items-center gap-2 cursor-pointer ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
+        <input
+          type="checkbox"
+          id={checkboxId}
+          name={name}
+          value={value}
+          checked={checked}
+          onChange={handleChange}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          className="sr-only"
+        />
+
+        <span
+          className={`
+            shrink-0 inline-flex items-center justify-center
+            border-2 transition-all duration-200
+            ${sizeClasses[size]}
+            ${isInvalid ? 'border-danger' : checked ? 'border-accent bg-accent' : 'border-muted bg-transparent'}
+            ${checkboxClassName}
+          `}
+        >
+          {isIndeterminate ? (
+            <Minus className="w-full h-full text-white p-px" strokeWidth={3} />
+          ) : checked ? (
+            <Check className="w-full h-full text-white p-px" strokeWidth={3} />
+          ) : null}
+        </span>
+
+        <span
+          className={`
+            text-muted font-medium
+            ${labelSizeClasses[size]}
+            ${isInvalid ? 'text-danger' : ''}
+          `}
+        >
+          {label}
+        </span>
+      </label>
 
       {description && (
-        <Description
+        <p
           className={`
             text-xs transition-colors duration-200
-            ${isInvalid ? 'text-(--danger)' : 'text-(--field-placeholder)'}
+            ${isInvalid ? 'text-danger' : 'text-muted'}
             ${isDisabled ? 'opacity-50' : ''}
           `}
         >
           {description}
-        </Description>
+        </p>
       )}
     </div>
   )

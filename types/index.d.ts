@@ -22,5 +22,5 @@ export type Result<T> = {
 export type FetchOptions = RequestInit & {
   responseType?: 'json' | 'blob' | 'text',
   next?: NextFetchRequestConfig
-
+   skipAuthRedirect?: boolean 
 }

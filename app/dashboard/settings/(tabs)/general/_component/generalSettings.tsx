@@ -7,7 +7,7 @@ import { customToast, Input } from "@/app/component/ui";
 import { updatePassword } from "@/actions/user.action";
 
 export default function GeneralSettings() {
-const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -50,7 +50,7 @@ const [isChangingPassword, setIsChangingPassword] = useState(false);
   ];
 
   return (
-    <main className="bg-surface p-10 space-y-6">
+    <main className="bg-surface p-10 space-y-6 min-h-screen">
       {/* Email Notifications */}
       <SettingsSection title="Email Notification">
         {notificationItems.map((label, index) => (
@@ -78,23 +78,25 @@ const [isChangingPassword, setIsChangingPassword] = useState(false);
       {/* Security */}
       <SettingsSection title="Security">
         <div className="flex justify-between items-start">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 flex-1">
             <h3>Password</h3>
-            {isChangingPassword ? (
-              <Input
-                type="password"
-                name="password"
-                placeholder="Enter new password"
-                value={password}
-                onChange={(val) => setPassword(val)}
-              />
-            ) : (
-              <p className="text-segment">***************</p>
-            )}
+            <div className="min-h-12">
+              {isChangingPassword ? (
+                <Input
+                  type="password"
+                  name="password"
+                  placeholder="Enter new password"
+                  value={password}
+                  onChange={(val) => setPassword(val)}
+                />
+              ) : (
+                <p className="text-segment leading-12">***************</p>
+              )}
+            </div>
             <p className="text-segment">Last changed 12/12/2025</p>
           </div>
           <div
-            className="text-accent cursor-pointer transition-transform duration-200 active:scale-95"
+            className="text-accent cursor-pointer transition-transform duration-200 active:scale-95 shrink-0 ml-4 mt-1"
             onClick={() => {
               if (isChangingPassword) {
                 handlePasswordSave();
@@ -103,7 +105,7 @@ const [isChangingPassword, setIsChangingPassword] = useState(false);
               }
             }}
           >
-             {isSaving ? "Saving..." : isChangingPassword ? "Save password" : "Change password"}
+            {isSaving ? "Saving..." : isChangingPassword ? "Save password" : "Change password"}
           </div>
         </div>
       </SettingsSection>

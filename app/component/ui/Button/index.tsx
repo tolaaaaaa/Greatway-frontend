@@ -2,58 +2,19 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Button as HeroUIButton, type ButtonProps as HeroUIButtonProps } from '@heroui/react'
 import { buttonVariants, type ButtonVariantsProps } from './variants'
 
-interface CustomButtonProps extends Omit<HeroUIButtonProps, 'className'>, ButtonVariantsProps {
-  /**
-   * The variant of the button - uses HeroUI's standard variants
-   * Available: primary, secondary, tertiary, outline, ghost, danger, danger-soft
-   * @default 'primary'
-   */
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, ButtonVariantsProps {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'ghost' | 'danger' | 'danger-soft'
-
-  /**
-   * Custom rounded border style
-   * @default 'md'
-   */
   radius?: 'none' | 'sm' | 'md' | 'lg' | 'full'
-
-  /**
-   * Button children content
-   */
   children: React.ReactNode
-
-  /**
-   * Additional className to merge with variants
-   */
   className?: string
-
-  /**
-   * Link href to convert button to link
-   */
   href?: string
+  isPending?: boolean
+  fullWidth?: boolean
+  isDisabled?: boolean
 }
 
-type ButtonProps = CustomButtonProps
-
-/**
- * Button Component
- * 
- * A HeroUI-based button component with full HeroUI compatibility:
- * - All HeroUI Button props supported (onPress, isDisabled, isPending, isIconOnly, etc.)
- * - HeroUI's standard variants: primary, secondary, tertiary, outline, ghost, danger, danger-soft
- * - Custom border radius options
- * - Link support via href prop
- * - Full theme variable integration from global.css
- * 
- * @example
- * <Button>Click me</Button>
- * <Button variant="bordered">Bordered</Button>
- * <Button href="/page">Link Button</Button>
- * <Button isDisabled>Disabled</Button>
- * <Button isPending>Loading...</Button>
- */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -62,33 +23,36 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       children,
       href,
+      isPending = false,
+      fullWidth,
+      isDisabled = false,
       ...props
     },
     ref
   ) => {
-    const buttonClasses = buttonVariants({
-      variant,
-      radius,
-      className
-    })
+    const buttonClasses = buttonVariants({ variant, radius, className })
 
     const buttonElement = (
-      <HeroUIButton
+      <button
         ref={ref}
         className={buttonClasses}
+        disabled={isDisabled || isPending}
         {...props}
       >
-        {children}
-      </HeroUIButton>
+        {isPending ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+            </svg>
+            {children}
+          </span>
+        ) : children}
+      </button>
     )
 
-    // Wrap with Link if href is provided
     if (href) {
-      return (
-        <Link href={href}>
-          {buttonElement}
-        </Link>
-      )
+      return <Link href={href}>{buttonElement}</Link>
     }
 
     return buttonElement

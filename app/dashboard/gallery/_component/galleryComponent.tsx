@@ -135,7 +135,7 @@ export default function GalleryComponent({ gallery, initialPage = 1 }: Props) {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 gap-4 border border-dashed border-surface-tertiary rounded-xl">
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="p-5 rounded-full bg-surface">
                 <ImageIcon className="w-10 h-10 text-muted" />
               </div>

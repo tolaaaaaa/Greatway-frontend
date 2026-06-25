@@ -13,6 +13,7 @@ export async function encrypt(payload: SessionPayload) {
     .sign(encodedKey)
 }
 
+
 export async function decrypt(session: string | undefined = ''): Promise<SessionPayload | undefined> {
   if (!session) return
   try {
@@ -26,7 +27,6 @@ export async function decrypt(session: string | undefined = ''): Promise<Session
 }
 
 export async function createSession(payload: Omit<SessionPayload, 'expiresAt'>) {
-    console.log("payload",payload)
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const session = await encrypt({ ...payload, expiresAt })
   const cookieStore = await cookies()

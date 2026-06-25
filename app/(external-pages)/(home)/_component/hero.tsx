@@ -19,7 +19,7 @@ export default function Hero() {
                     "linear-gradient(to top, #06CD70 50%, transparent 50%)",
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "100% 45%",
-                  backgroundPosition: "0 60%",
+                  backgroundPosition: "0 80%",
                   display: "inline",
                   lineHeight: "inherit",
                 }}

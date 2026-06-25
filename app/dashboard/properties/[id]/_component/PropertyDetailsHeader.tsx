@@ -51,7 +51,7 @@ export default function PropertyDetailsHeader({
               <span className="text-muted">Address</span>
             </p>
           </div>
-          <Button variant="primary" size="lg" className="px-15 py-6" onClick={onSave} isDisabled={isSaving}>
+          <Button variant="primary" size="md" className="px-11 py-5 rounded-[15px]" onClick={onSave} isDisabled={isSaving}>
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>

@@ -33,8 +33,8 @@ export default function PropertiesTabLayout({ children }: { children: ReactNode 
           onChange={(tab) => router.push(`/dashboard/properties/${tab}`)}
         />
         <Link href="/dashboard/properties/new">
-          <Button variant="primary" size="md" className="rounded-md">
-            <Plus size={16} /> Add Property
+          <Button variant="primary" size="md" className="rounded-md flex justify-center items-center">
+            <Plus size={16} className="shrink-0"/> Add Property
           </Button>
         </Link>
       </div>

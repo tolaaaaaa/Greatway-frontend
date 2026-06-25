@@ -36,8 +36,7 @@ export default function ApplyModal({ isOpen, onClose, careerTitle }: Props) {
 
   const handleSubmit = async () => {
     setIsPending(true);
-    // TODO: wire up your action here
-    await new Promise((res) => setTimeout(res, 1500)); // simulate request
+    await new Promise((res) => setTimeout(res, 1500));
     setIsPending(false);
     setSuccess(true);
   };
@@ -54,11 +53,11 @@ export default function ApplyModal({ isOpen, onClose, careerTitle }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 p-4 overflow-y-auto"
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-286 bg-black rounded-[10px] p-[30px_25px] flex flex-col gap-5.25 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-286 bg-black rounded-[10px] p-[30px_25px] flex flex-col gap-5.25 my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
@@ -72,7 +71,6 @@ export default function ApplyModal({ isOpen, onClose, careerTitle }: Props) {
         {/* Success state */}
         {success ? (
           <div className="flex flex-col items-center justify-center gap-6 py-10">
-            {/* Green checkmark circle */}
             <div className="w-20 h-20 rounded-full bg-[#06CD70] flex items-center justify-center">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
                 <path

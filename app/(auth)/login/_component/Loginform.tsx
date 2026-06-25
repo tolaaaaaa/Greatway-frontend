@@ -26,7 +26,7 @@ export default function LoginForm() {
     if (error) {
       customToast.error(error);
     }
-  }, [error, customToast]);
+  }, [error]);
 
   return (
     <main className="flex flex-col flex-1 items-center  justify-center bg-background font-cambay">

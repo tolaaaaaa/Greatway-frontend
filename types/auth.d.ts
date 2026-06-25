@@ -10,6 +10,12 @@ type SessionPayload = {
   expiresAt: Date;
 };
 
+type ResetSessionPayload = {
+  email: string;
+  token: string;
+  expiresAt: Date;
+}
+
 type AuthUser = {
   id: string;
   fullName: string;
@@ -28,3 +34,20 @@ type LoginResponseType = {
 type registerResponse = {
   token: string;
 };
+
+
+type verifyEmailResponse = {
+  message: string
+}
+
+type forgotPasswordResponse = {
+  message: string
+}
+
+type resendOtp = {
+  message: string
+}
+
+type resetPasswordResponse = {
+  message: string
+}

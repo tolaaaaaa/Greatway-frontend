@@ -50,10 +50,12 @@ async function customFetch<T>(endpoint: string, options: FetchOptions): Promise<
 
     // 401 Unauthorized → redirect automatically
     if (response?.status === 401) {
-      if (typeof window === 'undefined') {
-        redirect('/login')
-      } else {
-        window.location.href = '/login'
+      if (!options.skipAuthRedirect) {  // ← only redirect if not skipped
+        if (typeof window === 'undefined') {
+          redirect('/login')
+        } else {
+          window.location.href = '/login'
+        }
       }
       return createFailure<T>({ message: 'Unauthorized', status: 401 })
     }
