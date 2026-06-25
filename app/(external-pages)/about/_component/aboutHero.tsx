@@ -31,7 +31,7 @@ export default function AboutHero() {
             <Link href={"/properties"}>
               <Button
                 variant="primary"
-                className="rounded-md font-bold text-[18px] py-6 px-6 inline-flex justify-center items-center"
+                className="rounded-md font-bold text-[18px] py-2.5 px-5 inline-flex justify-center items-center"
               >
                 View Properties
               </Button>

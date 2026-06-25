@@ -4,6 +4,7 @@ import HeroProperty from "./_component/heroProperty";
 import ContactUs from "../_component/contactUs";
 import { Suspense } from "react";
 import PropertiesSkeleton from "../_component/propertiesSkeleton";
+import FadeInSection from "../_component/fadeInSection";
 
 type Props = {
   searchParams: Promise<{ page?: string; location?: string; price?: string, type?: string }>;
@@ -45,16 +46,21 @@ export default async function Page({ searchParams }: Props) {
   return (
     <>
       <HeroProperty />
-      <Suspense key={`${currentPage}-${location}-${price}-${type}`} fallback={<PropertiesSkeleton />}>
-        <Properties
-          page={currentPage}
-          location={location}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-          type={type}
-        />
-      </Suspense>
-      <ContactUs />
+
+      <FadeInSection>
+        <Suspense key={`${currentPage}-${location}-${price}-${type}`} fallback={<PropertiesSkeleton />}>
+          <Properties
+            page={currentPage}
+            location={location}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            type={type}
+          />
+        </Suspense>
+      </FadeInSection>
+      <FadeInSection>
+        <ContactUs />
+      </FadeInSection>
     </>
   );
 }

@@ -7,6 +7,7 @@ import Location from "./_component/location";
 import Testimonial from "../_component/testimonial";
 import { dummyTestimonials } from "../(home)/page";
 import ContactUs from "../_component/contactUs";
+import FadeInSection from "../_component/fadeInSection";
 
 export default async function page() {
   const listedProperties = await getProperties({ status: "listed", limit: 4 });
@@ -14,20 +15,39 @@ export default async function page() {
   const soldProperties = await getProperties({ status: "sold" });
   const totalListedUnlistedProperties =
     listedProperties.metadata.total + unlistedProperties.metadata.total;
+
   return (
     <>
       <AboutHero />
-      <About />
-      <Leadership />
-      <Location />
-      <Stats
-        soldProperties={soldProperties.metadata.total ?? 0}
-        totalProperties={totalListedUnlistedProperties ?? 0}
-        listedProperties={listedProperties.metadata.total ?? 0}
-        use25={true}
-      />
-      <Testimonial testimonials={dummyTestimonials} usePadding={false} />
-      <ContactUs />
+
+      <FadeInSection>
+        <About />
+      </FadeInSection>
+
+      <FadeInSection delay={0.1}>
+        <Leadership />
+      </FadeInSection>
+
+      <FadeInSection delay={0.1}>
+        <Location />
+      </FadeInSection>
+
+      <FadeInSection delay={0.1}>
+        <Stats
+          soldProperties={soldProperties.metadata.total ?? 0}
+          totalProperties={totalListedUnlistedProperties ?? 0}
+          listedProperties={listedProperties.metadata.total ?? 0}
+          use25={true}
+        />
+      </FadeInSection>
+
+      <FadeInSection delay={0.1}>
+        <Testimonial testimonials={dummyTestimonials} usePadding={false} />
+      </FadeInSection>
+
+      <FadeInSection delay={0.1}>
+        <ContactUs />
+      </FadeInSection>
     </>
   );
 }

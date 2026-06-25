@@ -4,6 +4,7 @@ import ExternalGallerySkeleton from "./_component/externalGallerySkeleton";
 import HeroGallery from "./_component/heroGallery";
 import { Suspense } from "react";
 import ContactUs from "../_component/contactUs";
+import FadeInSection from "../_component/fadeInSection";
 
 type Props = {
   searchParams: Promise<{ page?: string }>;
@@ -20,10 +21,15 @@ export default async function page({ searchParams }: Props) {
   return (
     <>
       <HeroGallery />
-      <Suspense fallback={<ExternalGallerySkeleton />}>
-        <ExternalGallery gallery={galleries} />
-      </Suspense>
-      <ContactUs />
+
+      <FadeInSection>
+        <Suspense fallback={<ExternalGallerySkeleton />}>
+          <ExternalGallery gallery={galleries} />
+        </Suspense>
+      </FadeInSection>
+      <FadeInSection>
+        <ContactUs />
+      </FadeInSection>
     </>
   );
 }
