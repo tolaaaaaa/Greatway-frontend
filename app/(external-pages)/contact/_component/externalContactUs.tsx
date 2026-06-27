@@ -100,6 +100,7 @@ export default function ExternalContactUs() {
           <div className="lg:w-1/2 bg-black/50 p-6 rounded-lg space-y-4">
             <FieldWrapper>
               <FieldInput
+                name="name"
                 placeholder="Your Name"
                 value={values.name}
                 onChange={(val) => set("name", val)}
@@ -109,6 +110,7 @@ export default function ExternalContactUs() {
             <FieldWrapper>
               <FieldInput
                 type="email"
+                name="email"
                 placeholder="Email"
                 value={values.email}
                 onChange={(val) => set("email", val)}
@@ -118,6 +120,7 @@ export default function ExternalContactUs() {
             <FieldWrapper>
               <FieldInput
                 type="tel"
+                name="phoneNumber"
                 placeholder="Your Phone"
                 value={values.phone}
                 onChange={(val) => set("phone", val)}
@@ -139,9 +142,9 @@ export default function ExternalContactUs() {
               />
             </div>
 
-            <Button 
-              size="lg" 
-              className="w-full py-5.5" 
+            <Button
+              size="lg"
+              className="w-full py-5.5"
               onClick={handleSubmit}
               isDisabled={isPending}
             >
