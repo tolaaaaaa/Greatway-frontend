@@ -1,0 +1,3 @@
+type ContactUs = {
+    message: string
+}
