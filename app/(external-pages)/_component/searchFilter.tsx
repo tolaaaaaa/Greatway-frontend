@@ -33,7 +33,7 @@ export default function SearchFilter({ display = "both" }: SearchFilterProps) {
       {showSearch && (
         <div className="absolute bottom-0 left-0 right-0 translate-y-1/2 z-20">
           <div className="app-container">
-            <div className="bg-[#070707] rounded-[15px] shadow-[2px_4px_53px_-15px_rgba(0,0,0,0.25)] flex items-center gap-9.5 px-8.75 py-7.5 w-fit">
+            <div className="bg-[#070707] rounded-[15px] shadow-[0px_-5px_15px_-15px_#CBCBCB1F] flex items-center gap-9.5 px-8.75 py-7.5 w-fit">
               <div className="flex items-center justify-center gap-7.5">
                 {/* Location */}
                 <div className="flex flex-col gap-1.75 w-46.25">
