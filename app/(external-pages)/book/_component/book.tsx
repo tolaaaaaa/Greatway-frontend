@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -10,47 +10,33 @@ import {
   Clock,
   MessageSquare,
 } from "lucide-react";
-import { FieldIcon, FieldInput, FieldWrapper } from "@/app/component/ui";
+import { FieldIcon, FieldInput, FieldWrapper, customToast } from "@/app/component/ui";
+import { CreateBookingFormState } from "@/validations/bookings/create-booking.validation";
+import { createBooking } from "@/actions/booking.action";
 
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  location: string;
-  inspectionDate: string;
-  inspectionTime: string;
-  message: string;
+
+const initialValues: CreateBookingFormState = {
+  errors: {},
+  values: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    location: "",
+    inspectionDate: "" as unknown as Date,
+    inspectionTime: "",
+    message: "",
+  },
 };
-
-const emptyValues: FormValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  location: "",
-  inspectionDate: "",
-  inspectionTime: "",
-  message: "",
-};
-
-
 
 export default function BookInspection() {
-  const [values, setValues] = useState<FormValues>(emptyValues);
-  const [isPending, setIsPending] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [{ errors, values, error, success }, dispatch, isPending] = useActionState(createBooking, initialValues);
 
-  const set = (key: keyof FormValues, value: string) =>
-    setValues((prev) => ({ ...prev, [key]: value }));
-
-  const handleSubmit = async () => {
-    setIsPending(true);
-    // TODO: wire up your action here
-    await new Promise((res) => setTimeout(res, 1500));
-    setIsPending(false);
-    setSuccess(true);
-  };
+  useEffect(() => {
+    if (error) {
+      customToast.error(error);
+    }
+  }, [error]);
 
   if (success) {
     return (
@@ -81,16 +67,6 @@ export default function BookInspection() {
               Your inspection booking has been sent successfully. We will be in
               touch shortly.
             </p>
-            <button
-              onClick={() => {
-                setSuccess(false);
-                setValues(emptyValues);
-              }}
-              className="w-85.25 py-3.5 bg-[#06CD70] rounded-[10px] text-white font-bold text-[20px] text-center cursor-pointer hover:bg-[#05b862] transition-colors"
-              style={{ fontFamily: "Cambay, sans-serif" }}
-            >
-              Book Another
-            </button>
           </div>
         </div>
       </section>
@@ -118,79 +94,112 @@ export default function BookInspection() {
           </div>
 
           {/* Form */}
-          <div className="flex flex-col gap-5.75 w-full">
+          <form action={dispatch} className="flex flex-col gap-5.75 w-full">
             {/* Row 1 — First Name + Last Name */}
             <div className="flex flex-row gap-5.75 w-full">
-              <FieldWrapper>
-                <FieldIcon icon={User} />
-                <FieldInput
-                  placeholder="First Name"
-                  value={values.firstName}
-                  onChange={(val) => set("firstName", val)}
-                />
-              </FieldWrapper>
-              <FieldWrapper>
-                <FieldIcon icon={User} />
-                <FieldInput
-                  placeholder="Last Name"
-                  value={values.lastName}
-                  onChange={(val) => set("lastName", val)}
-                />
-              </FieldWrapper>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <FieldWrapper>
+                  <FieldIcon icon={User} />
+                  <FieldInput
+                    name="firstName"
+                    placeholder="First Name"
+                    defaultValue={values?.firstName}
+                  />
+                </FieldWrapper>
+                {errors?.firstName && (
+                  <p className="text-red-500 text-sm">{errors.firstName}</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <FieldWrapper>
+                  <FieldIcon icon={User} />
+                  <FieldInput
+                    name="lastName"
+                    placeholder="Last Name"
+                    defaultValue={values?.lastName}
+                  />
+                </FieldWrapper>
+                {errors?.lastName && (
+                  <p className="text-red-500 text-sm">{errors.lastName}</p>
+                )}
+              </div>
             </div>
 
             {/* Row 2 — Email */}
-            <FieldWrapper>
-              <FieldIcon icon={Mail} />
-              <FieldInput
-                type="email"
-                placeholder="E-mail Address"
-                value={values.email}
-                onChange={(val) => set("email", val)}
-              />
-            </FieldWrapper>
+            <div className="flex flex-col gap-1.5">
+              <FieldWrapper>
+                <FieldIcon icon={Mail} />
+                <FieldInput
+                  name="email"
+                  type="email"
+                  placeholder="E-mail Address"
+                  defaultValue={values?.email}
+                />
+              </FieldWrapper>
+              {errors?.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
+            </div>
 
             {/* Row 3 — Phone */}
-            <FieldWrapper>
-              <FieldIcon icon={Phone} />
-              <FieldInput
-                type="tel"
-                placeholder="Phone Number"
-                value={values.phone}
-                onChange={(val) => set("phone", val)}
-              />
-            </FieldWrapper>
+            <div className="flex flex-col gap-1.5">
+              <FieldWrapper>
+                <FieldIcon icon={Phone} />
+                <FieldInput
+                  name="phoneNumber"
+                  type="tel"
+                  placeholder="Phone Number"
+                  defaultValue={values?.phoneNumber}
+                />
+              </FieldWrapper>
+              {errors?.phoneNumber && (
+                <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+              )}
+            </div>
 
             {/* Row 4 — Location */}
-            <FieldWrapper>
-              <FieldIcon icon={MapPin} />
-              <FieldInput
-                placeholder="Location"
-                value={values.location}
-                onChange={(val) => set("location", val)}
-              />
-            </FieldWrapper>
+            <div className="flex flex-col gap-1.5">
+              <FieldWrapper>
+                <FieldIcon icon={MapPin} />
+                <FieldInput
+                  name="location"
+                  placeholder="Location"
+                  defaultValue={values?.location}
+                />
+              </FieldWrapper>
+              {errors?.location && (
+                <p className="text-red-500 text-sm">{errors.location}</p>
+              )}
+            </div>
 
             {/* Row 5 — Inspection Date + Time */}
             <div className="flex flex-row gap-5.75 w-full">
-              <FieldWrapper>
-                <FieldIcon icon={Calendar} />
-                <FieldInput
-                  type="date"
-                  placeholder="Inspection Date"
-                  value={values.inspectionDate}
-                  onChange={(val) => set("inspectionDate", val)}
-                />
-              </FieldWrapper>
-              <FieldWrapper>
-                <FieldIcon icon={Clock} />
-                <FieldInput
-                  type="time"
-                  placeholder="Inspection Time"
-                  value={values.inspectionTime}
-                  onChange={(val) => set("inspectionTime", val)}
-                />
-              </FieldWrapper>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <FieldWrapper>
+                  <FieldIcon icon={Calendar} />
+                  <FieldInput
+                    name="inspectionDate"
+                    type="date"
+                    placeholder="Inspection Date"
+                  />
+                </FieldWrapper>
+                {errors?.inspectionDate && (
+                  <p className="text-red-500 text-sm">{errors.inspectionDate as unknown as string}</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <FieldWrapper>
+                  <FieldIcon icon={Clock} />
+                  <FieldInput
+                    name="inspectionTime"
+                    type="time"
+                    placeholder="Inspection Time"
+                  />
+                </FieldWrapper>
+                {errors?.inspectionTime && (
+                  <p className="text-red-500 text-sm">{errors.inspectionTime as unknown as string}</p>
+                )}
+              </div>
             </div>
 
             {/* Row 6 — Additional Message */}
@@ -202,29 +211,29 @@ export default function BookInspection() {
                 minHeight: "318px",
               }}
             >
-              <MessageSquare
-                size={24}
-                className="text-[#C2C2C2] shrink-0 mt-1"
-              />
+              <MessageSquare size={24} className="text-[#C2C2C2] shrink-0 mt-1" />
               <textarea
+                name="message"
                 placeholder="Additional Message......"
-                value={values.message}
-                onChange={(e) => set("message", e.target.value)}
+                defaultValue={values?.message}
                 className="bg-transparent text-white placeholder:text-white text-[16px] leading-6.5 outline-none w-full resize-none h-full min-h-67.5"
                 style={{ fontFamily: "Cambay, sans-serif" }}
               />
             </div>
+            {errors?.message && (
+              <p className="text-red-500 text-sm">{errors.message}</p>
+            )}
 
             {/* Submit */}
             <button
-              onClick={handleSubmit}
+              type="submit"
               disabled={isPending}
               className="w-full py-5.5 bg-[#06CD70] rounded-[10px] text-white font-bold text-[20px] leading-8.25 text-center cursor-pointer hover:bg-[#05b862] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ fontFamily: "Cambay, sans-serif" }}
             >
               {isPending ? "Submitting..." : "Submit"}
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </section>

@@ -18,21 +18,27 @@ export function FieldIcon({ icon: Icon }: { icon: React.ComponentType<any> }) {
 
 export function FieldInput({
   type = "text",
+  name,
   placeholder,
   value,
   onChange,
+  defaultValue,
 }: {
   type?: string;
+  name: string,
   placeholder: string;
-  value: string;
-  onChange: (val: string) => void;
+  value?: string;
+  onChange?: (val: string) => void;
+  defaultValue?: string,
 }) {
   return (
     <input
       type={type}
+      name={name}
       placeholder={placeholder}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      defaultValue={defaultValue}
+     onChange={onChange ? (e) => onChange(e.target.value) : undefined}
       className="bg-transparent text-white placeholder:text-white text-[16px] leading-6.5 outline-none w-full"
       style={{
         fontFamily: "Cambay, sans-serif",

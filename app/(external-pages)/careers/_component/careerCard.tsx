@@ -92,61 +92,6 @@ export default function CareerCard({ career }: Props) {
       [&_em]:italic"
               />
             </div>
-
-            {/* Responsibilities + Skills side by side */}
-            {/* <div className="flex flex-row gap-22.5">
-              <div className="flex flex-col gap-2 flex-1">
-                <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
-                  Responsibilities
-                </h4>
-                <ul className="flex flex-col gap-0">
-                  {career.responsibilities?.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="text-[#C8C8C8] font-normal text-[16px] leading-6 flex items-start gap-2"
-                    >
-                      <span className="mt-2.5 w-1 h-1 rounded-full bg-[#C8C8C8] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="flex flex-col gap-2 w-111.5 shrink-0">
-                <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
-                  Skills & Qualifications
-                </h4>
-                <ul className="flex flex-col gap-0">
-                  {career.skills?.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="text-[#C8C8C8] font-normal text-[16px] leading-6 flex items-start gap-2"
-                    >
-                      <span className="mt-2.5 w-1 h-1 rounded-full bg-[#C8C8C8] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>  */}
-
-            {/* Benefits */}
-            {/* <div className="flex flex-col gap-2">
-              <h4 className="text-[#C8C8C8] font-normal text-[20px] leading-6">
-                Benefits
-              </h4>
-              <ul className="flex flex-col gap-0">
-                {career.benefits?.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="text-[#C8C8C8] font-normal text-[16px] leading-6 flex items-start gap-2"
-                  >
-                    <span className="mt-2.5 w-1 h-1 rounded-full bg-[#C8C8C8] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div> */}
           </div>
         )}
       </div>
@@ -154,6 +99,7 @@ export default function CareerCard({ career }: Props) {
         isOpen={showApply}
         onClose={() => setShowApply(false)}
         careerTitle={career.title}
+        careerId={career.id}
       />
     </>
   );
